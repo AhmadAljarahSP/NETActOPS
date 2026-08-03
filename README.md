@@ -2,6 +2,10 @@
 
 NETAct is an ISP network automation (MCP & Ansible), configuration management, topology graphing & analysis, network monitoring, security analysis, and AI copilot platform. It provides seamless configuration backup, automated compliance checks, live topology graphing, and an intelligent chat assistant for multi-vendor environments (Cisco IOS/XR, Huawei, Juniper, Arista, and F5).
 
+### 🚀 Key Focus Areas & Methodologies
+`AIOps` • `NetDevOps` • `NetOps` • `DevOps` • `CCIE Level Design` • `HCIE` • `JNCIE` • `Infrastructure as Code (IaC)` • `Model Context Protocol (MCP)` • `LangGraph State Machines` • `Automated Network Configuration & Backup` • `3D Topology Graphing`
+
+
 ---
 
 ## Table of Contents
@@ -142,6 +146,9 @@ The primary interface is built as a single-page React app that integrates device
 *   **3D Force-Directed Rendering**: Uses ThreeJS/WebGL to draw routers as nodes and physical links as edges.
 *   **Map Image Overlay**: Allows administrators to upload floor plans or geographic maps, placing devices at custom coordinates.
 *   **Coordinates Sync**: Dragging a node calls `POST /coords` to save the position to the backend, keeping the layout synchronized for all users.
+
+#### 3D Live Topology Motion Visualization:
+![3D Motion Topology](assets/3d_topology.gif)
 
 ### 5.2. AI Assistant Panel
 *   **Contextual Side Panel**: Stays open during configuration and troubleshooting tasks.
