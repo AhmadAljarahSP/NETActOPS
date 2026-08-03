@@ -1,0 +1,71 @@
+display clock                       
+display current-configuration | include sysname
+display router id               
+display elabel                        
+dir cfcard:                        
+dir cfcard2:              
+dir slave#cfcard:         
+dir slave#cfcard2:        
+display health                         
+display current-configuration     
+display  remote-backup-profile
+display version                   
+display patch-information         
+display switchover state                
+display alarm all                 
+display device
+display device pic-status 
+display startup                   
+display esn               
+display paf
+display license           
+display temperature               
+display voltage                   
+display arp all                   
+display mpls ldp peer                 
+display mpls ldp session all
+display mpls lsp statistic
+display tunnel-info statistic
+display snmp-agent trap all
+display dhcp-server group
+display vrrp brief 
+display vrrp admin-vrrp   
+display bfd session all            
+display interface                 
+display interface brief   
+display interface description   
+display isis peer 
+display ospf peer brief
+display ospf peer                   
+display bgp peer                       
+display bgp vpnv4 all peer
+display bgp vpnv6 all peer
+display ip routing-table statistic
+#display ip routing-table 
+#display ip routing-table all-vpn-instance statistics
+#display ip routing-table all-vpn-instance
+display bgp vpnv4 all routing-table statistics
+display bgp vpnv6 all routing-table statistics
+display access-user
+display access-user user-type dhcp  summary
+display access-user user-type dual-stack summary
+display access-user user-type ipv4 summary
+display access-user user-type ipv6 summary
+display access-user user-type pppoe summary
+display max-onlineusers   
+display access-user slot 
+display domain 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

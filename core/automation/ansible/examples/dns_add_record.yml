@@ -1,0 +1,58 @@
+---
+# Example: add a resource record to an existing zone using the
+# netact.solidserver collection's native module syntax. Shows a loop over
+# multiple records of different types (A, CNAME, MX, TXT) — value1's
+# meaning depends on rr_type per the reference guide's Table 36.1.
+#
+# Run with: ansible-playbook examples/dns_add_record.yml \
+#   -e dns_server_name=ns1.example.com -e dnszone_name=example.com
+
+- name: Add resource records to a zone
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    # Edit this list, or pass -e dns_records='[...]' to override entirely.
+    dns_records:
+      - rr_name: "www.example.com"
+        rr_type: A
+        value1: "10.1.1.50"
+      - rr_name: "mail.example.com"
+        rr_type: A
+        value1: "10.1.1.51"
+      - rr_name: "webmail.example.com"
+        rr_type: CNAME
+        value1: "mail.example.com"
+      - rr_name: "example.com"
+        rr_type: MX
+        value1: "10"
+        value2: "mail.example.com"
+  tasks:
+    - name: Assert required vars
+      ansible.builtin.assert:
+        that:
+          - dns_server_name is defined
+          - dnszone_name is defined
+        fail_msg: "Pass -e dns_server_name=<fqdn> -e dnszone_name=<zone>"
+
+    - name: Add each record
+      netact.solidserver.dns_write:
+        backend_url: "{{ netact_backend_url }}"
+        api_key: "{{ netact_app_password }}"
+        method: dns_rr_add
+        params: >-
+          {{
+            {'dnszone_name': dnszone_name, 'dns_name': dns_server_name, 'add_flag': 'new_edit'}
+            | combine(item)
+          }}
+      register: rr_results
+      loop: "{{ dns_records }}"
+      loop_control:
+        label: "{{ item.rr_name }} ({{ item.rr_type }})"
+
+    - name: Show what was added
+      ansible.builtin.debug:
+        msg: "{{ item.item.rr_name }} ({{ item.item.rr_type }}) -> {{ item.result.status }}"
+      loop: "{{ rr_results.results }}"
+      loop_control:
+        label: "{{ item.item.rr_name }}"

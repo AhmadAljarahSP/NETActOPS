@@ -1,0 +1,51 @@
+---
+# Example: sign a zone with DNSSEC using the netact.solidserver
+# collection's native module syntax. Only zones belonging to a smart
+# architecture or an EfficientIP DNS server can be signed (per the
+# reference guide's dnssec_enable_sign_zone description) — signing a
+# BIND-only zone that isn't managed that way will fail with a backend
+# error, not silently no-op.
+#
+# Run with: ansible-playbook examples/dns_sign_dnssec.yml \
+#   -e dns_server_name=ns1.example.com -e dnszone_name=example.com
+
+- name: Sign a zone with DNSSEC
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Assert required vars
+      ansible.builtin.assert:
+        that:
+          - dns_server_name is defined
+          - dnszone_name is defined
+        fail_msg: "Pass -e dns_server_name=<fqdn> -e dnszone_name=<zone>"
+
+    - name: Enable DNSSEC signing on the zone
+      netact.solidserver.dns_write:
+        backend_url: "{{ netact_backend_url }}"
+        api_key: "{{ netact_app_password }}"
+        method: dnssec_enable_sign_zone
+        params:
+          dnszone_name: "{{ dnszone_name }}"
+          dns_name: "{{ dns_server_name }}"
+          zsk_encryption_type: "{{ dnssec_zsk_algorithm | default('rsasha256') }}"
+          ksk_encryption_type: "{{ dnssec_ksk_algorithm | default('rsasha256') }}"
+      register: sign_result
+
+    - name: Show the result
+      ansible.builtin.debug:
+        var: sign_result.result
+
+    - name: List the zone's DNSSEC keys (ZSK/KSK) now that it's signed
+      netact.solidserver.dns_read:
+        backend_url: "{{ netact_backend_url }}"
+        api_key: "{{ netact_app_password }}"
+        method: dnssec_zone_keys_list
+        params:
+          WHERE: "dnszone_name='{{ dnszone_name }}'"
+      register: keys_result
+
+    - name: Show the keys
+      ansible.builtin.debug:
+        var: keys_result.result

@@ -1,0 +1,55 @@
+# Secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+
+# Real device inventory — ships empty, users add their own via UI/import
+core/backend/devices/*.yaml
+core/automation/devices/*.yaml
+!core/backend/devices/README.md
+
+# Knowledge base — device-derived vault content and container runtime state
+knowledge/obsidian_topology/
+knowledge/obsidian_config/
+ai/backend/graphify-out/
+
+# Vector DB storage and snapshots
+ai/qdrant_storage/
+ai/qdrant_snapshots/
+
+# Runtime databases
+*.db
+core/db/
+ai/db/
+
+# TLS certificates and private keys
+*.key
+*.crt
+*.pem
+
+# Vendored third-party tool excluded from this repo
+mcpyats/
+
+# Runtime/derived data that shouldn't ship
+topology/backend/data/
+.fuse_hidden*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+vite.config.js.timestamp-*.mjs
+
+# OS/editor cruft
+.DS_Store
+*.swp
+*.bak
+
+# Logs
+*.log

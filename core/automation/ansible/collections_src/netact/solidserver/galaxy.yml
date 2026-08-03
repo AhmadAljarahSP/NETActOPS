@@ -1,0 +1,29 @@
+namespace: netact
+name: solidserver
+version: 2.0.0
+readme: README.md
+authors:
+  - NETAct
+description: >-
+  Custom NETAct collection wrapping NETAct_backend's sanitized SOLIDserver
+  IPAM and DNS gateways (read/write) as native Ansible modules
+  (ipam_read/ipam_write/dns_read/dns_write). Never connects to the
+  EfficientIP SOLIDserver appliance directly — backend does, calling the
+  documented REST API directly (no third-party SDK), and enforces its own
+  read/write method allowlist (see core/backend/ipam_solidserver.py and
+  dns_solidserver.py). Method names verified against EfficientIP's
+  official SOLIDserver API REST Reference Guide (v7.3, revision #100648).
+  Local/unpublished — built and installed from source, not fetched from
+  Ansible Galaxy.
+license:
+  - MIT
+tags:
+  - networking
+  - ipam
+  - dns
+  - ddi
+  - solidserver
+repository: https://github.com/local/netact
+issues: https://github.com/local/netact
+build_ignore:
+  - '*.tar.gz'

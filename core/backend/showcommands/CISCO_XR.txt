@@ -1,0 +1,2 @@
+terminal leng 0
+show run

@@ -1,0 +1,824 @@
+{
+  "version": "1.0",
+  "description": "NETAct Copilot intent classifier benchmark — 15 groups covering all 14 intents",
+  "groups": [
+    {
+      "id": "G01",
+      "name": "General Chat / Greetings",
+      "intent": "general_chat",
+      "cases": [
+        {
+          "id": "G01-01",
+          "query": "hello",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G01-02",
+          "query": "hi there",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G01-03",
+          "query": "who are you?",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G01-04",
+          "query": "what can you do?",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G01-05",
+          "query": "explain OSPF to me",
+          "expected_intent": "general_chat"
+        }
+      ]
+    },
+    {
+      "id": "G02",
+      "name": "Date & Time Queries",
+      "intent": "general_chat",
+      "cases": [
+        {
+          "id": "G02-01",
+          "query": "what time is it?",
+          "expected_intent": "current_time",
+          "note": "Deliberate deterministic fast-path (intent_router.py _time_phrases), not general_chat"
+        },
+        {
+          "id": "G02-02",
+          "query": "what is today's date?",
+          "expected_intent": "current_time",
+          "note": "Deliberate deterministic fast-path (intent_router.py _time_phrases), not general_chat"
+        },
+        {
+          "id": "G02-03",
+          "query": "what day is it",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G02-04",
+          "query": "tell me the current time",
+          "expected_intent": "current_time",
+          "note": "Deliberate deterministic fast-path (intent_router.py _time_phrases), not general_chat"
+        },
+        {
+          "id": "G02-05",
+          "query": "what year is it",
+          "expected_intent": "general_chat"
+        }
+      ]
+    },
+    {
+      "id": "G03",
+      "name": "List Nodes / Inventory",
+      "intent": "list_nodes",
+      "cases": [
+        {
+          "id": "G03-01",
+          "query": "list all nodes",
+          "expected_intent": "list_nodes"
+        },
+        {
+          "id": "G03-02",
+          "query": "show me all registered devices",
+          "expected_intent": "list_nodes"
+        },
+        {
+          "id": "G03-03",
+          "query": "what devices are in inventory?",
+          "expected_intent": "list_nodes"
+        },
+        {
+          "id": "G03-04",
+          "query": "list network devices",
+          "expected_intent": "list_nodes"
+        },
+        {
+          "id": "G03-05",
+          "query": "show device inventory",
+          "expected_intent": "list_nodes"
+        }
+      ]
+    },
+    {
+      "id": "G04",
+      "name": "List Backups",
+      "intent": "list_backups",
+      "cases": [
+        {
+          "id": "G04-01",
+          "query": "list all backups",
+          "expected_intent": "list_backups"
+        },
+        {
+          "id": "G04-02",
+          "query": "show available config backups",
+          "expected_intent": "list_backups"
+        },
+        {
+          "id": "G04-03",
+          "query": "what backups do we have?",
+          "expected_intent": "list_backups"
+        },
+        {
+          "id": "G04-04",
+          "query": "show me the backup list",
+          "expected_intent": "list_backups"
+        },
+        {
+          "id": "G04-05",
+          "query": "list backup history",
+          "expected_intent": "list_backups"
+        }
+      ]
+    },
+    {
+      "id": "G05",
+      "name": "List Healthchecks",
+      "intent": "list_healthchecks",
+      "cases": [
+        {
+          "id": "G05-01",
+          "query": "list all healthchecks",
+          "expected_intent": "list_healthchecks"
+        },
+        {
+          "id": "G05-02",
+          "query": "show available health check results",
+          "expected_intent": "list_healthchecks"
+        },
+        {
+          "id": "G05-03",
+          "query": "list diagnostic reports",
+          "expected_intent": "list_healthchecks"
+        },
+        {
+          "id": "G05-04",
+          "query": "show me all health check logs",
+          "expected_intent": "list_healthchecks"
+        },
+        {
+          "id": "G05-05",
+          "query": "what healthchecks are stored?",
+          "expected_intent": "list_healthchecks"
+        }
+      ]
+    },
+    {
+      "id": "G06",
+      "name": "Run Healthcheck",
+      "intent": "run_healthcheck",
+      "cases": [
+        {
+          "id": "G06-01",
+          "query": "run healthcheck for demo-switch-01",
+          "expected_intent": "run_healthcheck",
+          "expected_device": "demo-switch-01"
+        },
+        {
+          "id": "G06-02",
+          "query": "check health on demo-router-01",
+          "expected_intent": "run_healthcheck",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G06-03",
+          "query": "perform health check on 203.0.113.12",
+          "expected_intent": "run_healthcheck",
+          "expected_device": "demo-router-02"
+        },
+        {
+          "id": "G06-04",
+          "query": "collect health demo-core-03",
+          "expected_intent": "run_healthcheck",
+          "expected_device": "demo-core-03"
+        },
+        {
+          "id": "G06-05",
+          "query": "run health check on demo-switch-01",
+          "expected_intent": "run_healthcheck",
+          "expected_device": "demo-switch-01"
+        }
+      ]
+    },
+    {
+      "id": "G07",
+      "name": "Run Backup",
+      "intent": "run_backup",
+      "cases": [
+        {
+          "id": "G07-01",
+          "query": "run backup for demo-switch-01",
+          "expected_intent": "run_backup",
+          "expected_device": "demo-switch-01"
+        },
+        {
+          "id": "G07-02",
+          "query": "collect config backup for demo-router-01",
+          "expected_intent": "run_backup",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G07-03",
+          "query": "backup the configuration of 203.0.113.13",
+          "expected_intent": "run_backup",
+          "expected_device": "demo-agg-01"
+        },
+        {
+          "id": "G07-04",
+          "query": "run config backup on demo-core-03",
+          "expected_intent": "run_backup",
+          "expected_device": "demo-core-03"
+        },
+        {
+          "id": "G07-05",
+          "query": "take a backup of demo-router-02",
+          "expected_intent": "run_backup",
+          "expected_device": "demo-router-02"
+        }
+      ]
+    },
+    {
+      "id": "G08",
+      "name": "Run Automation Flow",
+      "intent": "run_automation",
+      "cases": [
+        {
+          "id": "G08-01",
+          "query": "run automation UpgradeOSPF on demo-switch-01",
+          "expected_intent": "run_automation",
+          "expected_device": "demo-switch-01"
+        },
+        {
+          "id": "G08-02",
+          "query": "execute workflow AddStaticRoute on demo-router-01",
+          "expected_intent": "run_automation",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G08-03",
+          "query": "trigger flow UpdateACL for demo-core-03",
+          "expected_intent": "run_automation",
+          "expected_device": "demo-core-03"
+        },
+        {
+          "id": "G08-04",
+          "query": "run automation flow BGPPeerAdd on 203.0.113.14",
+          "expected_intent": "run_automation",
+          "expected_device": "demo-core-03"
+        },
+        {
+          "id": "G08-05",
+          "query": "execute automation VLANPush on demo-agg-01",
+          "expected_intent": "run_automation",
+          "expected_device": "demo-agg-01"
+        }
+      ]
+    },
+    {
+      "id": "G09",
+      "name": "Run Diagnostic (Show Commands)",
+      "intent": "run_diagnostic",
+      "cases": [
+        {
+          "id": "G09-01",
+          "query": "show ip bgp summary on demo-switch-01",
+          "expected_intent": "query_healthcheck_section",
+          "expected_device": "demo-switch-01",
+          "note": "Deliberately answered from stored healthcheck data (see G20), not a live run_diagnostic action"
+        },
+        {
+          "id": "G09-02",
+          "query": "display lldp neighbors demo-router-01",
+          "expected_intent": "query_healthcheck_section",
+          "expected_device": "demo-router-01",
+          "note": "Deliberately answered from stored healthcheck data (see G20), not a live run_diagnostic action"
+        },
+        {
+          "id": "G09-03",
+          "query": "ping 8.8.8.8 from demo-core-03",
+          "expected_intent": "run_diagnostic",
+          "expected_device": "demo-core-03"
+        },
+        {
+          "id": "G09-04",
+          "query": "traceroute to 10.0.0.1 from demo-switch-01",
+          "expected_intent": "run_diagnostic",
+          "expected_device": "demo-switch-01"
+        },
+        {
+          "id": "G09-05",
+          "query": "show interface status on demo-router-02",
+          "expected_intent": "run_diagnostic",
+          "expected_device": "demo-router-02"
+        },
+        {
+          "id": "G09-06",
+          "query": "show ospf neighbors on demo-switch-01",
+          "expected_intent": "query_healthcheck_section",
+          "expected_device": "demo-switch-01",
+          "note": "Deliberately answered from stored healthcheck data (see G20), not a live run_diagnostic action"
+        }
+      ]
+    },
+    {
+      "id": "G10",
+      "name": "Knowledge Base (Vector DB) Lookups",
+      "intent": "general_chat",
+      "cases": [
+        {
+          "id": "G10-01",
+          "query": "what is in the Huawei configuration guide?",
+          "expected_intent": "general_chat",
+          "note": "KB lookups route as intent=general_chat + route=vector_db (see intent_router.py dynamic semantic router); 'vector_db' is a route label, never an intent value"
+        },
+        {
+          "id": "G10-02",
+          "query": "what does the MOP document say about VLAN configuration?",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G10-03",
+          "query": "find information about BGP peering in my documents",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G10-04",
+          "query": "search the knowledge base for OSPF area design",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G10-05",
+          "query": "what does the uploaded PDF say about QoS policies?",
+          "expected_intent": "general_chat"
+        }
+      ]
+    },
+    {
+      "id": "G11",
+      "name": "ITSM Ticket Queries",
+      "intent": "itsm_query",
+      "cases": [
+        {
+          "id": "G11-01",
+          "query": "show me ITSM tickets for demo-switch-01",
+          "expected_intent": "itsm_query"
+        },
+        {
+          "id": "G11-02",
+          "query": "list open change requests",
+          "expected_intent": "itsm_query"
+        },
+        {
+          "id": "G11-03",
+          "query": "what tickets are pending approval?",
+          "expected_intent": "itsm_query"
+        },
+        {
+          "id": "G11-04",
+          "query": "show ticket CHG345089",
+          "expected_intent": "itsm_query"
+        },
+        {
+          "id": "G11-05",
+          "query": "list all approved change tickets",
+          "expected_intent": "itsm_query"
+        }
+      ]
+    },
+    {
+      "id": "G12",
+      "name": "Analyze Logs / Healthcheck Data",
+      "intent": "analyze_logs",
+      "cases": [
+        {
+          "id": "G12-01",
+          "query": "analyze healthcheck logs of demo-switch-01",
+          "expected_intent": "analyze_logs",
+          "expected_device": "demo-switch-01"
+        },
+        {
+          "id": "G12-02",
+          "query": "why is GigabitEthernet0/0/7 down on demo-switch-01?",
+          "expected_intent": "analyze_logs",
+          "expected_device": "demo-switch-01"
+        },
+        {
+          "id": "G12-03",
+          "query": "diagnose the OSPF issue on demo-router-01",
+          "expected_intent": "analyze_logs",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G12-04",
+          "query": "what is causing the BGP flap on demo-router-01?",
+          "expected_intent": "analyze_logs",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G12-05",
+          "query": "review last healthcheck results for demo-switch-01",
+          "expected_intent": "analyze_logs",
+          "expected_device": "demo-switch-01"
+        }
+      ]
+    },
+    {
+      "id": "G13",
+      "name": "Gemini Escalation",
+      "intent": "general_chat",
+      "cases": [
+        {
+          "id": "G13-01",
+          "query": "gemini explain why OSPF is flapping",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G13-02",
+          "query": "ask gemini about BGP route reflectors",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G13-03",
+          "query": "use gemini to review this config",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G13-04",
+          "query": "gemini what are best practices for MPLS?",
+          "expected_intent": "general_chat"
+        },
+        {
+          "id": "G13-05",
+          "query": "gemini help me design a redundant WAN",
+          "expected_intent": "general_chat"
+        }
+      ]
+    },
+    {
+      "id": "G14",
+      "name": "MOP / Audit Queries",
+      "intent": null,
+      "cases": [
+        {
+          "id": "G14-01",
+          "query": "show config audit for demo-switch-01",
+          "expected_intent": "show_config",
+          "expected_device": "demo-switch-01",
+          "note": "No dedicated MOP/audit chat feature exists (git_diff/git_history/mop_audit are never-wired app_audit_keywords, presumably a separate frontend Audit tab). Documents current best-effort fallback, not an ideal mapping."
+        },
+        {
+          "id": "G14-02",
+          "query": "compare config changes on demo-router-01",
+          "expected_intent": "compare_backups",
+          "expected_device": "demo-router-01",
+          "note": "This one genuinely matches compare_backups's purpose well."
+        },
+        {
+          "id": "G14-03",
+          "query": "what changed in the config of demo-router-01 last week?",
+          "expected_intent": "show_config",
+          "expected_device": "demo-router-01",
+          "note": "Arguably should be compare_backups; falls to show_config's broad 'config' keyword instead. Known gap, unbuilt feature area."
+        },
+        {
+          "id": "G14-04",
+          "query": "show git diff for demo-router-02",
+          "expected_intent": "run_diagnostic",
+          "expected_device": "demo-router-02",
+          "note": "No git-diff chat feature; falls to the generic 'show ' catch-all. Known gap, unbuilt feature area."
+        },
+        {
+          "id": "G14-05",
+          "query": "audit config history of demo-switch-01",
+          "expected_intent": "run_audit_config_changes",
+          "expected_device": "demo-switch-01",
+          "note": "LLM hallucinates a 'run_' prefix on the prompt's documented audit_config_changes intent name; harmless (falls outside agent.py's operational_intents set so no live action is attempted) but worth reconciling naming if this feature is ever built out."
+        }
+      ]
+    },
+    {
+      "id": "G15",
+      "name": "Ambiguous / Edge Cases",
+      "intent": null,
+      "cases": [
+        {
+          "id": "G15-01",
+          "query": "TOR23",
+          "expected_intent": "unregistered_device",
+          "note": "Looks device-shaped but isn't a full registered hostname — correctly flagged not-found rather than guessed at"
+        },
+        {
+          "id": "G15-02",
+          "query": "show me everything",
+          "expected_intent": "general_chat",
+          "note": "vague, no device or clear intent"
+        },
+        {
+          "id": "G15-03",
+          "query": "monitor demo-switch-01",
+          "expected_intent": "run_healthcheck",
+          "expected_device": "demo-switch-01",
+          "note": "Genuinely ambiguous — 'monitor' could mean healthcheck or an automated monitoring flow. Small classifier model currently guesses run_automation. Known LLM-judgment gap, not a deterministic bug."
+        },
+        {
+          "id": "G15-04",
+          "query": "backup and health check demo-router-01",
+          "expected_intent": "run_backup",
+          "expected_device": "demo-router-01",
+          "note": "multi-action: first verb wins or backup takes priority"
+        },
+        {
+          "id": "G15-05",
+          "query": "is OSPF stable on demo-router-01?",
+          "expected_intent": "analyze_logs",
+          "expected_device": "demo-router-01",
+          "note": "diagnostic question about a device"
+        },
+        {
+          "id": "G15-06",
+          "query": "share OSPF configuration examples for Cisco IOS XR",
+          "expected_intent": "general_chat",
+          "note": "Real user-reported bug (2026-07-12): names a vendor/platform, not a registered device — was matching show_config's 'config' substring-in-'configuration' keyword, then falling back to a device carried over from conversation history, giving a wrong device's 'no backup found' error for what's actually a documentation question."
+        },
+        {
+          "id": "G15-07",
+          "query": "show me a sample BGP configuration for Juniper",
+          "expected_intent": "general_chat",
+          "note": "Same bug pattern as G15-06 via run_diagnostic's 'show ' keyword instead of show_config's 'config' keyword."
+        }
+      ]
+    },
+    {
+      "id": "G16",
+      "name": "Live Device / Network Status",
+      "intent": "live_device_status",
+      "cases": [
+        {
+          "id": "G16-01",
+          "query": "is demo-router-01 up?",
+          "expected_intent": "live_device_status",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G16-02",
+          "query": "what's the status of demo-core-03?",
+          "expected_intent": "live_device_status",
+          "expected_device": "demo-core-03"
+        },
+        {
+          "id": "G16-03",
+          "query": "whats down on the network?",
+          "expected_intent": "live_topology_status"
+        },
+        {
+          "id": "G16-04",
+          "query": "any devices down right now?",
+          "expected_intent": "live_topology_status"
+        },
+        {
+          "id": "G16-05",
+          "query": "is 203.0.113.11 reachable?",
+          "expected_intent": "live_device_status"
+        }
+      ]
+    },
+    {
+      "id": "G17",
+      "name": "Protocol Neighbor Count",
+      "intent": "count_protocol_neighbors",
+      "cases": [
+        {
+          "id": "G17-01",
+          "query": "how many BGP neighbors does demo-router-01 have?",
+          "expected_intent": "count_protocol_neighbors",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G17-02",
+          "query": "how many OSPF neighbors for demo-router-01?",
+          "expected_intent": "count_protocol_neighbors",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G17-03",
+          "query": "count of BGP sessions on demo-router-01",
+          "expected_intent": "count_protocol_neighbors",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G17-04",
+          "query": "number of OSPF peers on demo-agg-01",
+          "expected_intent": "count_protocol_neighbors",
+          "expected_device": "demo-agg-01"
+        },
+        {
+          "id": "G17-05",
+          "query": "total BGP neighbors for demo-core-03",
+          "expected_intent": "count_protocol_neighbors",
+          "expected_device": "demo-core-03"
+        }
+      ]
+    },
+    {
+      "id": "G18",
+      "name": "EOL / EOS Compliance",
+      "intent": "eoleos_compliance",
+      "cases": [
+        {
+          "id": "G18-01",
+          "query": "what is the EOL status of demo-agg-01?",
+          "expected_intent": "eoleos_compliance",
+          "expected_device": "demo-agg-01"
+        },
+        {
+          "id": "G18-02",
+          "query": "which devices are past end of life?",
+          "expected_intent": "eoleos_compliance"
+        },
+        {
+          "id": "G18-03",
+          "query": "show me EOL compliance",
+          "expected_intent": "eoleos_compliance"
+        },
+        {
+          "id": "G18-04",
+          "query": "is demo-core-03 end of sale?",
+          "expected_intent": "eoleos_compliance",
+          "expected_device": "demo-core-03"
+        },
+        {
+          "id": "G18-05",
+          "query": "eol report",
+          "expected_intent": "eoleos_compliance"
+        }
+      ]
+    },
+    {
+      "id": "G19",
+      "name": "Vendor Inventory Stats",
+      "intent": "query_inventory_stats",
+      "cases": [
+        {
+          "id": "G19-01",
+          "query": "how many cisco devices do we have?",
+          "expected_intent": "query_inventory_stats"
+        },
+        {
+          "id": "G19-02",
+          "query": "how many huawei devices do we have?",
+          "expected_intent": "query_inventory_stats"
+        },
+        {
+          "id": "G19-03",
+          "query": "how many nokia routers?",
+          "expected_intent": "query_inventory_stats"
+        },
+        {
+          "id": "G19-04",
+          "query": "how many juniper devices?",
+          "expected_intent": "query_inventory_stats"
+        },
+        {
+          "id": "G19-05",
+          "query": "cisco switches count",
+          "expected_intent": "query_inventory_stats"
+        }
+      ]
+    },
+    {
+      "id": "G20",
+      "name": "Healthcheck Section Queries (raw show)",
+      "intent": "query_healthcheck_section",
+      "cases": [
+        {
+          "id": "G20-01",
+          "query": "show bgp summary for demo-router-01",
+          "expected_intent": "query_healthcheck_section",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G20-02",
+          "query": "show interfaces for demo-router-01",
+          "expected_intent": "query_healthcheck_section",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G20-03",
+          "query": "display ospf neighbors on demo-router-01",
+          "expected_intent": "query_healthcheck_section",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G20-04",
+          "query": "get arp table for demo-router-01",
+          "expected_intent": "query_healthcheck_section",
+          "expected_device": "demo-router-01"
+        },
+        {
+          "id": "G20-05",
+          "query": "show me the bgp peers on demo-core-03",
+          "expected_intent": "query_healthcheck_section",
+          "expected_device": "demo-core-03"
+        }
+      ]
+    },
+    {
+      "id": "G21",
+      "name": "Unregistered / Nonexistent Device",
+      "intent": "unregistered_device",
+      "cases": [
+        {
+          "id": "G21-01",
+          "query": "is FAKE-DEVICE-999 up?",
+          "expected_intent": "unregistered_device"
+        },
+        {
+          "id": "G21-02",
+          "query": "show config for NOTAREALDEVICE-01",
+          "expected_intent": "unregistered_device"
+        },
+        {
+          "id": "G21-03",
+          "query": "is 10.99.99.99 up?",
+          "expected_intent": "unregistered_ip"
+        },
+        {
+          "id": "G21-04",
+          "query": "how many BGP neighbors does FAKE-ROUTER-01 have?",
+          "expected_intent": "unregistered_device"
+        },
+        {
+          "id": "G21-05",
+          "query": "what is the EOL status of NONEXISTENT-DEVICE-01?",
+          "expected_intent": "unregistered_device"
+        }
+      ]
+    },
+    {
+      "id": "G22",
+      "name": "Context Follow-up (multi-turn)",
+      "intent": "count_protocol_neighbor_status",
+      "cases": [
+        {
+          "id": "G22-01",
+          "query": "how may are up and how many are down ?",
+          "history": [
+            {
+              "role": "user",
+              "content": "for demo-router-01 how many BGP neighbors there ?"
+            },
+            {
+              "role": "assistant",
+              "content": "217 BGP sessions"
+            }
+          ],
+          "expected_intent": "count_protocol_neighbor_status",
+          "expected_device": "demo-router-01",
+          "note": "Original bug report — device/protocol must carry forward from the prior turn."
+        },
+        {
+          "id": "G22-02",
+          "query": "how many are established?",
+          "history": [
+            {
+              "role": "user",
+              "content": "how many OSPF neighbors does demo-agg-01 have?"
+            },
+            {
+              "role": "assistant",
+              "content": "8 OSPF sessions"
+            }
+          ],
+          "expected_intent": "count_protocol_neighbor_status",
+          "expected_device": "demo-agg-01"
+        },
+        {
+          "id": "G22-03",
+          "query": "for demo-router-01 how many BGP neighbors there ?",
+          "history": [],
+          "expected_intent": "count_protocol_neighbors",
+          "expected_device": "demo-router-01",
+          "note": "Control case — device+protocol in the message itself, no history needed."
+        },
+        {
+          "id": "G22-04",
+          "query": "and how many are down for that one?",
+          "history": [
+            {
+              "role": "user",
+              "content": "how many OSPF neighbors does demo-core-03 have?"
+            },
+            {
+              "role": "assistant",
+              "content": "12 OSPF sessions"
+            }
+          ],
+          "expected_intent": "count_protocol_neighbor_status",
+          "expected_device": "demo-core-03"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+terminal length 0
+terminal width 512
+show run

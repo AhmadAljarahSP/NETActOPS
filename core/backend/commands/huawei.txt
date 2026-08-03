@@ -1,0 +1,4 @@
+display version
+display clock
+display device
+display ip interface brief

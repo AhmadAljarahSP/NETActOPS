@@ -1,0 +1,72 @@
+display current-configuration
+display cpu-usage slave
+display cpu-usage history 1hour
+display interface brief
+display interface
+display ip interface brief
+display vlan
+display mac-address
+display license
+display lldp neighbor brief
+display stp brief
+display css channel all
+display css css-port all
+display css status saved
+display css status
+display ip routing-table
+display ip routing-table statistics
+display ip routing-table all statistics
+display arp all
+display arp
+display pim neighbor
+display pim interface
+display pim rp-info
+display pim routing-table
+display pim routing-table brief
+display pim control-message counters message-type join-prune
+display pim mib-control-message counters
+display multicast routing-table
+display multicast forwarding-table statistics
+display multicast forwarding-table verbose
+display igmp interface
+display igmp group verbose
+display igmp invalid-packet
+display igmp invalid-packet verbose
+display igmp snooping configuration
+display igmp snooping
+display igmp snooping statistics vlan
+display igmp snooping querier vlan
+display igmp snooping port-info
+display igmp snooping group
+display igmp snooping group brief
+display igmp-snooping port-info
+display igmp-snooping router-port vlan
+display l2-multicast forwarding-table vlan 101
+display l2-multicast forwarding-table vlan 110
+display l2-multicast forwarding-table vlan 121
+display l2-multicast forwarding-table vlan 160
+display l2-multicast forwarding-table vlan 161
+display l2-multicast forwarding-table vlan 202
+display l2-multicast forwarding-table vlan 211
+display l2-multicast forwarding-table vlan 212
+display l2-multicast forwarding-table vlan 231
+display l2-multicast forwarding-table vlan 232
+display l2-multicast forwarding-table vlan 242
+display l2-multicast forwarding-table vlan 252
+display l2-multicast forwarding-table vlan 330
+display l2-multicast forwarding-table vlan 340
+display l2-multicast forwarding-table vlan 350
+display l2-multicast forwarding-table vlan 360
+display l2-multicast forwarding-table vlan 370
+display l2-multicast forwarding-table vlan 380
+display l2-multicast forwarding-table vlan 390
+display l2-multicast forwarding-table vlan 391
+display l2-multicast forwarding-table vlan 392
+display l2-multicast forwarding-table vlan 393
+display l2-multicast forwarding-table vlan 500
+display l2-multicast forwarding-table vlan 600
+display l2-multicast forwarding-table vlan 888
+display l2-multicast forwarding-table vlan 996
+display ipmc forwarding-table statistics
+display ipmc forwarding-table
+

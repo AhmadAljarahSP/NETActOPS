@@ -1,0 +1,292 @@
+{
+  "fast_path_overrides": {
+    "list_nodes": [
+      "list node",
+      "list device",
+      "show device",
+      "inventory",
+      "get node",
+      "get device",
+      "show node",
+      "available node",
+      "available device",
+      "registered device",
+      "registered node"
+    ],
+    "list_backups": [
+      "list backup",
+      "show backup",
+      "get backup",
+      "available backup",
+      "backup list",
+      "all backups",
+      "config backups"
+    ],
+    "list_healthchecks": [
+      "list health",
+      "show health",
+      "get health",
+      "available health",
+      "show me the last healthcheck",
+      "show me the last health check",
+      "all healthcheck",
+      "all health check",
+      "diagnostic report",
+      "list diagnostic",
+      "are stored",
+      "healthchecks stored"
+    ],
+    "active_alarms": [
+      "active alarm",
+      "show alarm",
+      "list alarm",
+      "what alarm",
+      "failed backup",
+      "failed healthcheck",
+      "unresolved issue"
+    ],
+    "itsm_query": [
+      "itsm ticket",
+      "itsm",
+      "show ticket",
+      "list ticket",
+      "open ticket",
+      "change request",
+      "change ticket",
+      "pending approval",
+      "approved ticket",
+      "approved change"
+    ],
+    "eoleos_compliance": [
+      "eol",
+      "eos",
+      "compliance",
+      "expired",
+      "hardware compliance",
+      "software compliance",
+      "end of life",
+      "end of sale",
+      "end-of-life",
+      "end-of-sale"
+    ],
+    "show_config": [
+      "backup",
+      "config",
+      "running config"
+    ],
+    "analyze_logs": [
+      "healthcheck",
+      "health check",
+      "health",
+      "log",
+      "healthehck",
+      "results",
+      "diagnose",
+      "stable",
+      "unstable",
+      "why is",
+      "causing"
+    ],
+    "query_healthcheck_section": [
+      "ospf neighbors",
+      "bgp summary",
+      "bgp neighbors",
+      "bgp peers",
+      "bgp peer",
+      "interfaces",
+      "arp table",
+      "lldp neighbors",
+      "isis neighbors",
+      "mpls forwarding",
+      "route table",
+      "qos statistics",
+      "optical interfaces",
+      "ospf peers",
+      "ospf adjacency",
+      "ospf status",
+      "ospf topology",
+      "established bgp",
+      "bgp sessions",
+      "bgp down",
+      "bgp state",
+      "ospf down",
+      "isis database"
+    ],
+    "query_inventory_stats": [
+      "how many routers",
+      "how many switches",
+      "how many devices",
+      "how many nodes",
+      "how many cisco",
+      "how many huawei",
+      "how many nokia",
+      "how many juniper",
+      "devices are offline",
+      "haven't been backed up",
+      "without healthcheck",
+      "missing licenses",
+      "serial number",
+      "locate device",
+      "site a",
+      "nokia routers",
+      "nokia devices",
+      "cisco switches",
+      "cisco devices",
+      "cisco routers",
+      "huawei devices",
+      "juniper devices",
+      "owns interface"
+    ],
+    "query_automation_history": [
+      "last executed workflow",
+      "who executed",
+      "failed workflows",
+      "successful automations",
+      "workflows executed",
+      "execution duration",
+      "workflow execution logs"
+    ],
+    "query_compliance_baseline": [
+      "violate the configuration baseline",
+      "missing ntp",
+      "without snmp",
+      "use telnet",
+      "duplicate ip",
+      "hostname compliance"
+    ],
+    "query_interface_status": [
+      "interfaces down",
+      "crc errors",
+      "packet drops",
+      "utilization above",
+      "flapping interfaces",
+      "administratively down",
+      "optical power"
+    ],
+    "compare_backups": [
+      "compare backup",
+      "compare config",
+      "what changed on",
+      "what changed since",
+      "configuration changes on",
+      "routing policies were modified",
+      "interfaces that were modified",
+      "bgp neighbors changed"
+    ],
+    "compare_healthchecks": [
+      "what changed between the last two health checks",
+      "what changed between the last two healthchecks",
+      "compare last healthchecks",
+      "healthcheck differences",
+      "health check difference"
+    ]
+  },
+  "agent_fast_path_keywords": {
+    "run_healthcheck": [
+      "run healthcheck",
+      "collect healthcheck",
+      "trigger healthcheck",
+      "perform healthcheck",
+      "collect health",
+      "run health",
+      "perform health",
+      "blast radius",
+      "neighbor drop",
+      "interface flap",
+      "bgp down",
+      "ospf down"
+    ],
+    "run_backup": [
+      "run backup",
+      "collect backup",
+      "trigger backup",
+      "config backup",
+      "take a backup",
+      "take backup"
+    ],
+    "list_nodes": [
+      "list node",
+      "list device",
+      "show device",
+      "inventory"
+    ],
+    "run_automation": [
+      "automation",
+      "flow",
+      "workflow",
+      "flow_temp_test",
+      "flow_temp_test",
+      "flow_temp_test",
+      "flow_temp_test",
+      "flow_temp_test"
+    ],
+    "run_diagnostic": [
+      "diagnostic",
+      "show ",
+      "display ",
+      "ping ",
+      "traceroute",
+      "run command",
+      "execute",
+      "ping",
+      "traceroute",
+      "display lldp",
+      "show bgp"
+    ]
+  },
+  "_prompts_note": "All LLM prompts have been moved to prompts.json. Edit that file to change any prompt — hot-reloaded, no rebuild needed.",
+  "app_audit_keywords": {
+    "git_history": [
+      "history",
+      "changes",
+      "commits",
+      "git log",
+      "backup log",
+      "backup history"
+    ],
+    "git_diff": [
+      "compare",
+      "diff",
+      "difference",
+      "what changed"
+    ],
+    "show_config": [
+      "show config",
+      "share config",
+      "print config",
+      "display config",
+      "get config",
+      "running-config",
+      "configuration"
+    ],
+    "conversational": [
+      "hi",
+      "hello",
+      "hey",
+      "who are you",
+      "what are you",
+      "explain",
+      "how do",
+      "how does",
+      "what is",
+      "why ",
+      "help",
+      "tell me",
+      "design",
+      "how to",
+      "write a",
+      "can you",
+      "what device",
+      "selected device"
+    ],
+    "cli_indicators": [
+      "interface ",
+      "ip address",
+      "shutdown",
+      "router ",
+      "vlan ",
+      "switchport ",
+      "system-view"
+    ]
+  }
+}

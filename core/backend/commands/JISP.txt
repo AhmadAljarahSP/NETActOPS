@@ -1,0 +1,68 @@
+show interfaces diagnostics optics xe-3/2/1
+show interfaces controller xe-3/2/1
+show interfaces smart
+show interfaces smart media
+show interfaces smart media de
+show chassis power
+show chassis hardware
+show chassis hardware models
+show version
+show system memory
+show system connections
+show system commit
+show system processes extensive
+show chassis fabric fpcs
+show chassis routing-engine
+show system storage | no-more
+show version invoke-on all-routing-engines
+show cli history
+show cli history 50
+show chassis alarms
+show chassis fpc
+show chassis fpc pic-status
+show task memory
+show task replication
+show task
+show chassis firmware
+show chassis environment
+show ntp status
+show firewall te
+show firewall terse
+show system users
+show system uptime
+show system processes
+show system processes summary
+show system st
+show system statistics
+show system core-dumps
+show system alarms
+show log chassisd
+show interfaces terse
+show interfaces statistics terse
+show interfaces statistics detail
+show class-of-service interface
+show route summary
+show lacp interfaces
+show ospf interface brief
+show ospf neighbor
+show bgp summary
+show bgp summary | match Esta|no-more
+show bgp summary | match Acti|no-more
+show bgp summary | match Conn|no-more
+show bgp summary | match idle|no-more
+show bgp neighbor
+show bfd session
+show bgp summary | no-more |count
+show bgp summary | match Esta| no-more |count
+show bgp summary | match Acti| no-more |count
+show bgp summary | match Conn| no-more |count
+show bgp summary | match idle| no-more |count
+show bfd session | no-more |count
+show mpls interface
+show ldp interface brief
+show mpls lsp extensive
+show chassis alarms    
+show chassis routing-engine 
+show version invoke-on all-routing-engines 
+show chassis fpc 
+show log messages

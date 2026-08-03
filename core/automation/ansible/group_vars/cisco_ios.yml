@@ -1,0 +1,3 @@
+# Generic Cisco (vendor: "cisco") devices not otherwise classified as
+# cisco_xr or cisco_aci — treated as IOS/IOS-XE by default.
+netact_vendor_label: cisco_ios

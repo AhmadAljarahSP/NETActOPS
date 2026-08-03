@@ -1,0 +1,4 @@
+show version
+show system uptime
+show interfaces terse
+show configuration | display set

@@ -1,0 +1,133 @@
+###############################################################################
+# NETAct — Compose 2: AI Stack
+#
+# Requires core stack running first.
+#
+# Start:   docker compose -f docker-compose.ai.yml up -d --build
+# Stop:    docker compose -f docker-compose.ai.yml down
+# Sync KB: curl -X POST http://localhost:8010/api/copilot/sync-kb
+###############################################################################
+
+name: netact
+
+services:
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: NETAct_ollama
+    restart: unless-stopped
+    environment:
+      OLLAMA_KEEP_ALIVE: "-1"    # never unload — ample RAM, avoids repeated CPU model-load cost
+      OLLAMA_NUM_PARALLEL: 8
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - config-net
+
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: NETAct_ollama_init
+    restart: "no"
+    environment:
+      OLLAMA_HOST: http://NETAct_ollama:11434
+    entrypoint: ["/bin/sh", "-c", "until ollama list > /dev/null 2>&1; do echo 'Waiting for Ollama...'; sleep 3; done && ollama pull llama3.2 && ollama pull nomic-embed-text && ollama pull bge-m3 && ollama pull qwen2.5-coder:0.5b-instruct && ollama pull qwen2.5:0.5b-instruct"]
+    depends_on:
+      - ollama
+    networks:
+      - config-net
+
+  ollama-exporter:
+    build:
+      context: ./ai/ollama/exporter
+    container_name: NETAct_ollama_exporter
+    restart: unless-stopped
+    environment:
+      OLLAMA_BASE_URL: "http://NETAct_ollama:11434"
+      EXPORTER_PORT: "9110"
+    ports:
+      - "127.0.0.1:9110:9110"
+      - "127.0.0.1:11435:11435"
+    depends_on:
+      - ollama
+    networks:
+      - config-net
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: NETAct_qdrant
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6333:6333"
+      - "127.0.0.1:6334:6334"
+    volumes:
+      - ./ai/qdrant_storage:/qdrant/storage
+      - ./ai/qdrant_snapshots:/qdrant/snapshots
+    networks:
+      - config-net
+
+  copilot-backend:
+    build:
+      context: ./ai/backend
+    container_name: NETAct_copilot_backend
+    restart: unless-stopped
+    user: root
+    env_file: .env
+    environment:
+      GIT_REPO_PATH: /git/repo
+      VAULT_PATH: /app/obsidian_topology
+      OLLAMA_HOST: http://NETAct_ollama_exporter:11435
+      OLLAMA_MODEL: llama3.2
+      CLASSIFIER_MODEL: qwen2.5:0.5b-instruct
+      OLLAMA_NUM_THREAD: "24"
+      # Ollama's CPU backend only ever runs one request at a time internally
+      # (confirmed via its own slot logs) regardless of concurrency sent to it —
+      # so raising EMBEDDING_CONCURRENCY has no effect. The real lever is
+      # per-call thread count, since there's no multi-call stacking risk.
+      EMBEDDING_NUM_THREAD: "24"
+      EMBEDDING_CONCURRENCY: "4"
+      QDRANT_HOST: http://NETAct_qdrant:6333
+      EMBEDDING_MODEL: nomic-embed-text
+      BACKEND_API: http://NETAct_backend:8000
+      DB_PATH: /app/db/copilot_history.db
+      TOPOLOGY_API: http://NETAct_topology_backend:8001
+    volumes:
+      - git-repo:/git/repo:rw
+      - ./ai/db:/app/db:rw
+      - ./ai/backend:/app:rw
+      - ./core/backend:/backend:ro
+      - ./knowledge/obsidian_topology:/app/obsidian_topology:rw
+    ports:
+      - "127.0.0.1:8010:8002"
+    depends_on:
+      - qdrant
+      - ollama
+    networks:
+      - config-net
+
+  copilot-frontend:
+    build:
+      context: ./ai/frontend
+    container_name: NETAct_copilot_frontend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NGINX_ENVSUBST_FILTER: APP_PASSWORD
+    depends_on:
+      - copilot-backend
+    ports:
+      - "127.0.0.1:8011:80"
+    networks:
+      - config-net
+
+volumes:
+  ollama-data:
+  git-repo:
+    external: true
+    name: netact_git-repo
+
+networks:
+  config-net:
+    external: true
+    name: netact_config-net

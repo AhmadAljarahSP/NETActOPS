@@ -1,0 +1,21 @@
+show ospf database router
+show ospf database opaque-area
+show mpls traffic-eng topology
+show mpls traffic-eng tunnels detail
+show rsvp session
+show ipv4 interface brief | ex down
+show interface description | ex down
+show ospf interface brief
+show ospf neighbour
+show mpls ldp neighbour | in Peer
+Show route summary
+Show rsvp reservation 
+admin show inventory
+show bgp summary
+show log
+show redundancy
+Show run
+admin show platform
+admin show hw-module fpd location all
+admin show inventory
+Admin show license

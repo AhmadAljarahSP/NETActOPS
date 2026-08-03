@@ -1,0 +1,54 @@
+# NETAct Ansible vendor collection manifest.
+#
+# Scoped to the vendors actually present in NETAct's device inventory
+# (cisco_xr, cisco, huawei, juniper_junos — see core/backend/devices/*.yaml)
+# plus ansible.netcommon (the vendor-agnostic NETCONF/CLI transport layer
+# used for Huawei, which has no official Cisco-maintained Ansible collection)
+# and f5networks.f5_modules (closes the REST-API/GUI-managed-device gap
+# identified for platforms like F5 BIG-IP that the existing CLI-scraping
+# automation engine was never built to reach).
+#
+# Install: ansible-galaxy collection install -r requirements.yml
+
+collections:
+  # --- Cisco ---
+  - name: cisco.ios          # IOS / IOS-XE devices
+    version: ">=5.3.0"
+  - name: cisco.iosxr        # IOS-XR — the primary Cisco platform in inventory
+    version: ">=5.0.0"
+  - name: cisco.nxos         # NX-OS, in case of Nexus/ACI-adjacent gear
+    version: ">=5.0.0"
+  - name: cisco.aci          # matches the cisco_aci device group in inventory
+    version: ">=2.9.0"
+
+  # --- Juniper ---
+  - name: junipernetworks.junos
+    version: ">=5.3.0"
+
+  # --- Arista (not yet in inventory, included for coverage parity with
+  # common ISP/DC fleets; harmless to have installed and unused) ---
+  - name: arista.eos
+    version: ">=6.1.0"
+
+  # --- F5 (REST/iControl-based — closes the GUI-managed-device gap) ---
+  - name: f5networks.f5_modules
+    version: ">=1.29.0"
+
+  # --- Vendor-agnostic transport layer ---
+  # Huawei VRP has no official Cisco-maintained Ansible collection. The
+  # NE9000 fleet confirmed supports NETCONF (SNETCONF enabled, port 830 —
+  # verified against the vendor's own config guide during KB ingestion), so
+  # netconf_config / netconf_get / cli_command from this collection are the
+  # real path for Huawei, not a vendor-specific collection.
+  - name: ansible.netcommon
+    version: ">=5.1.0"
+
+  # --- Broader community coverage (Huawei CloudEngine switches, generic
+  # network device fallbacks not covered by the above) ---
+  - name: community.network
+    version: ">=5.0.0"
+
+  # --- Core utilities ---
+  - name: ansible.utils
+    version: ">=3.1.0"
+  - name: cisco.catalystcenter

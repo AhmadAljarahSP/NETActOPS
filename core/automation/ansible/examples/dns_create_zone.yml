@@ -1,0 +1,36 @@
+---
+# Example: create (or edit) an authoritative master zone using the
+# netact.solidserver collection's native module syntax.
+#
+# Run with: ansible-playbook examples/dns_create_zone.yml \
+#   -e dns_server_name=ns1.example.com -e dnsview_name=default \
+#   -e dnszone_name=example.com
+
+- name: Create an authoritative DNS zone
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Assert required vars
+      ansible.builtin.assert:
+        that:
+          - dns_server_name is defined
+          - dnszone_name is defined
+        fail_msg: "Pass -e dns_server_name=<fqdn> -e dnszone_name=<zone>"
+
+    - name: Add or edit the zone
+      netact.solidserver.dns_write:
+        backend_url: "{{ netact_backend_url }}"
+        api_key: "{{ netact_app_password }}"
+        method: dns_zone_add
+        params:
+          dnszone_name: "{{ dnszone_name }}"
+          dnszone_type: "{{ dnszone_type | default('master') }}"
+          dnsview_name: "{{ dnsview_name | default('default') }}"
+          dns_name: "{{ dns_server_name }}"
+          add_flag: new_edit
+      register: result
+
+    - name: Show the result (ret_oid is the new zone's database ID)
+      ansible.builtin.debug:
+        var: result.result

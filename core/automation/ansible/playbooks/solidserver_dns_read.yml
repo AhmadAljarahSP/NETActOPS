@@ -1,0 +1,73 @@
+---
+# solidserver_dns_read.yml — generic read-only DNS query pass-through to
+# NETAct_backend's POST /dns/solidserver/read, for an EfficientIP
+# SOLIDserver appliance's DNS services (servers/views/zones/records/ACLs/
+# TSIG keys/DNSSEC keys). Ansible never talks to the appliance directly,
+# same as every other playbook here — see core/backend/dns_solidserver.py
+# for the allowlisted method names this can actually call and the
+# SOLIDSERVER_HOST/USER/PASSWORD env vars backend needs configured before
+# this will do anything but 503.
+#
+# READ-ONLY. sds_method must be one of the *_list/*_info/*_count services
+# for DNS servers, views, view options, zones, zone options, resource
+# records, ACLs, TSIG keys, or DNSSEC zone keys — backend rejects anything
+# else with 400 regardless of what this playbook sends. GET
+# /dns/solidserver/methods on backend returns the full current allowlist
+# plus each method's Mandatory Input Parameters live.
+#
+# NOTE on "hosts: all": this queries one appliance, not per-device state —
+# the play below only targets real inventory hosts so this flow satisfies
+# the visual designer's requirement that a node have at least one targeted
+# device selected; the DNS call itself is identical no matter which device
+# triggered it (select just one when using this flow from the visual
+# designer to avoid redundant calls). When run directly via
+# ansible-playbook, any inventory group works, e.g. -l cisco_iosxr.
+#
+# Usage:
+#   ansible-playbook playbooks/solidserver_dns_read.yml -l cisco_iosxr \
+#     -e sds_method=dns_zone_list -e sds_params="{\"WHERE\": \"dns_name='ns1.example.com'\"}"
+
+- name: Validate required variables before querying
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    netact_playbook_mode: read_only
+  tasks:
+    - name: Assert a DNS method was provided
+      ansible.builtin.assert:
+        that:
+          - sds_method is defined
+        fail_msg: >-
+          Required var missing. Pass -e sds_method=<dns_server_list|dns_server_info|
+          dns_server_count|dns_view_list|dns_view_info|dns_view_count|
+          dns_view_param_list|dns_view_param_info|dns_view_param_count|
+          dns_zone_list|dns_zone_info|dns_zone_count|dns_zone_param_list|
+          dns_zone_param_info|dns_zone_param_count|dns_rr_list|dns_rr_info|
+          dns_rr_count|dns_acl_list|dns_acl_info|dns_acl_count|dns_key_list|
+          dns_key_info|dns_key_count|dnssec_zone_keys_list|dnssec_zone_keys_info>
+          [-e sds_params='{"key":"value"}'] — refusing to guess which DNS
+          query to run. See GET /dns/solidserver/methods on backend for
+          each method's required params.
+
+- name: Query SOLIDserver DNS via backend gateway
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: POST read query to backend SOLIDserver DNS gateway
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/dns/solidserver/read"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: "{{ sds_method }}"
+          params: "{{ (sds_params | default('{}')) | from_json }}"
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: sds_result
+
+    - name: Report outcome
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ sds_result.json }}"

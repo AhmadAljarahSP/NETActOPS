@@ -1,0 +1,54 @@
+---
+# Example: deploy a TSIG key and restrict a zone's transfers to it, using
+# the netact.solidserver collection's native module syntax. Two steps:
+# dns_key_add (create the key), then dns_zone_param_add (set the zone's
+# allow-transfer option to require that key).
+#
+# Run with: ansible-playbook examples/dns_deploy_tsig_key.yml \
+#   -e dns_server_name=ns1.example.com -e dnszone_name=example.com \
+#   -e dns_tsig_key_name=transfer-key
+
+- name: Deploy a TSIG key and secure zone transfers with it
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Assert required vars
+      ansible.builtin.assert:
+        that:
+          - dns_server_name is defined
+          - dnszone_name is defined
+          - dns_tsig_key_name is defined
+        fail_msg: >-
+          Pass -e dns_server_name=<fqdn> -e dnszone_name=<zone>
+          -e dns_tsig_key_name=<key-name>
+
+    - name: Create the TSIG key
+      netact.solidserver.dns_write:
+        backend_url: "{{ netact_backend_url }}"
+        api_key: "{{ netact_app_password }}"
+        method: dns_key_add
+        params:
+          dnskey_name: "{{ dns_tsig_key_name }}"
+          dns_name: "{{ dns_server_name }}"
+          add_flag: new_edit
+      register: key_result
+
+    - name: Restrict the zone's transfers to clients holding this key
+      netact.solidserver.dns_write:
+        backend_url: "{{ netact_backend_url }}"
+        api_key: "{{ netact_app_password }}"
+        method: dns_zone_param_add
+        params:
+          dnszone_name: "{{ dnszone_name }}"
+          dns_name: "{{ dns_server_name }}"
+          dnszoneparam_name: allow-transfer
+          dnszoneparam_value: "key {{ dns_tsig_key_name }};"
+          add_flag: new_edit
+      register: transfer_result
+
+    - name: Show the results
+      ansible.builtin.debug:
+        msg:
+          - "TSIG key '{{ dns_tsig_key_name }}': {{ key_result.result }}"
+          - "Zone transfer policy: {{ transfer_result.result }}"

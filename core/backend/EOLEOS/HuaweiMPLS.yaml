@@ -1,0 +1,437 @@
+devices:
+  - hardware_type: CE6810-48S4Q-EI
+    software_eos: 30-Jun-22
+    hardware_eos: 30-Jun-22
+    software_version: V200R005C10SPC800
+  - hardware_type: CE6850-48S6Q-HI
+    software_eos: 31-Dec-22
+    hardware_eos: 31-Dec-22
+    software_version: V200R005C10SPC800
+  - hardware_type: CE6863-48S6CQ
+    software_eos: 31-Dec-23
+    hardware_eos: 31-Dec-34
+    software_version: V200R019C10SPC800
+  - hardware_type: CE6881-48S6CQ
+    software_eos: 31-Dec-23
+    hardware_eos: 31-Dec-35
+    software_version: V200R019C10SPC800
+  - hardware_type: CE6857-48S6CQ-EI
+    software_eos: 31-Dec-28
+    hardware_eos: 31-Dec-28
+    software_version: V200R024C00
+  - hardware_type: CE6881-48S6CQ
+    software_eos: 31-Dec-28
+    hardware_eos: 31-Dec-35
+    software_version: V200R024C00SPC500
+  - hardware_type: CE6881-48S6CQ
+    software_eos: 31-Dec-28
+    hardware_eos: 31-Dec-35
+    software_version: V200R024C00SPC500
+  - hardware_type: CE6881-48S6CQ
+    software_eos: 31-Dec-28
+    hardware_eos: 31-Dec-35
+    software_version: V200R024C00SPC500
+  - hardware_type: CE6857-48S6CQ-EI
+    software_eos: TBC
+    hardware_eos: 31-Dec-26
+    software_version: V200R023C00SPC500
+  - hardware_type: CE6857-48S6CQ-EI
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-26
+    software_version: V200R024C00SPC500
+  - hardware_type: CE6857-48S6CQ-EI
+    software_eos: 31-Dec-23
+    hardware_eos: 31-Dec-26
+    software_version: V200R005C10SPC800
+  - hardware_type: CE6857-48S6CQ-EI
+    software_eos: 31-Dec-23
+    hardware_eos: 31-Dec-26
+    software_version: V200R005C10SPC800
+  - hardware_type: CE6855-48S6Q-HI
+    software_eos: 31-Dec-24
+    hardware_eos: 31-Dec-24
+    software_version: V200R019C10SPC800
+  - hardware_type: CE6863E-48S6CQ
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-36
+    software_version: V200R024C00SPC500
+  - hardware_type: CE6881-48S6CQ
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-35
+    software_version: V200R024C00SPC500
+  - hardware_type: CE6863-48S6CQ
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-34
+    software_version: V200R024C00SPC500
+  - hardware_type: CE6881-48S6CQ
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-35
+    software_version: V200R022C00SPC500
+  - hardware_type: CE6881-48S6CQ
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-35
+    software_version: V200R022C00SPC500
+  - hardware_type: CE8851-32CQ8DQ-P
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-26
+    software_version: V300R022C00SPC200
+  - hardware_type: CE8861-4C-EI
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-26
+    software_version: V200R022C00SPC500
+  - hardware_type: CE8861-4C-EI
+    software_eos: 31-Dec-23
+    hardware_eos: 31-Dec-26
+    software_version: V200R019C10SPC800
+  - hardware_type: CX600-X3
+    software_eos: 31-Dec-22
+    hardware_eos: 31-Dec-24
+    software_version: V600R008C10SPC300
+  - hardware_type: CX600-X3
+    software_eos: 31-Dec-22
+    hardware_eos: 31-Dec-24
+    software_version: V600R008C10SPC300
+  - hardware_type: CX600-X8
+    software_eos: 31-Dec-22
+    hardware_eos: 31-Dec-24
+    software_version: V600R008C10SPC300
+  - hardware_type: CX600-X8(V8)
+    software_eos: 31-Dec-22
+    hardware_eos: 31-Dec-24
+    software_version: V600R008C10SPC300
+  - hardware_type: CX600-X8(V8)
+    software_eos: 30-Jun-24
+    hardware_eos: 31-Dec-24
+    software_version: V800R012C10SPC300
+  - hardware_type: CX600-X8(V8)
+    software_eos: 31-Dec-24
+    hardware_eos: 31-Dec-24
+    software_version: V800R022C00SPC600
+  - hardware_type: CX600-X8A(V8)
+    software_eos: 30-Jun-24
+    hardware_eos: 31-Dec-36
+    software_version: V800R012C10SPC300
+  - hardware_type: CX600-X8A(V8)
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-36
+    software_version: V800R023C00SPC500
+  - hardware_type: CX600-X8A(V8)
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-36
+    software_version: V800R024C00SPC500
+  - hardware_type: Eudemon200E-N3
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-26
+    software_version: eudemonv500r005c20spc500
+  - hardware_type: Eudemon1000E-G3
+    software_eos: 31-Dec-26
+    hardware_eos: 31-Dec-26
+    software_version: V600R007C20SPC100
+  - hardware_type: ME60-X16
+    software_eos: 30-Jun-24
+    hardware_eos: 31-Dec-24
+    software_version: V800R012C10SPC300
+  - hardware_type: NE40E-X8(V5)
+    software_eos: 31-Dec-22
+    hardware_eos: 31-Dec-24
+    software_version: V600R008C10SPC300
+  - hardware_type: NE40E-X8(V5)
+    software_eos: 31-Dec-22
+    hardware_eos: 31-Dec-24
+    software_version: V600R008C10SPC300
+  - hardware_type: NE40E-X8(V8)
+    software_eos: 30-Jun-24
+    hardware_eos: 31-Dec-24
+    software_version: V800R012C10SPC300
+  - hardware_type: NE40E-X8(V8)
+    software_eos: 30-Jun-24
+    hardware_eos: 31-Dec-24
+    software_version: V800R012C10SPC300
+  - hardware_type: NE40E-X8A(V8)
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-36
+    software_version: V800R022C00SPC600
+  - hardware_type: NE40E-X8A(V8)
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-36
+    software_version: V800R023C00SPC500
+  - hardware_type: NE40E-X8A(V8)
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-36
+    software_version: V800R024C00SPC500
+  - hardware_type: NE40E-X8A(V8)
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-36
+    software_version: V800R022C00SPC600
+  - hardware_type: NE40E-X8A(V8)
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-36
+    software_version: V800R022C00SPC600
+  - hardware_type: NE40E-X8A(V8)
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-36
+    software_version: V800R023C00SPC500
+  - hardware_type: NE40E-X8A(V8)
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-36
+    software_version: V800R023C00SPC500
+  - hardware_type: 'S3328TP-EI
+
+      S2300&S3300&S5300&S6300'
+    software_eos: 31-Dec-24
+    hardware_eos: 30-Jun-25
+    software_version: V100R006C05
+  - hardware_type: 'S5328C-EI
+
+      S2300&S3300&S5300&S6300'
+    software_eos: 30-Jun-25
+    hardware_eos: 30-Jun-22
+    software_version: V200R005C00SPC500
+  - hardware_type: 'S5328C-EI
+
+      S2300&S3300&S5300&S6300'
+    software_eos: 30-Jun-25
+    hardware_eos: 30-Jun-22
+    software_version: V200R005C00SPC500
+  - hardware_type: 'S5328C-EI
+
+      S2300&S3300&S5300&S6300'
+    software_eos: 30-Jun-20
+    hardware_eos: 30-Jun-22
+    software_version: V200R008C00500
+  - hardware_type: S5320-36C-EI-28S-DC
+    software_eos: 30-Jun-21
+    hardware_eos: 30-Jun-25
+    software_version: V200R010C00
+  - hardware_type: S5320-36C-EI-28S-DC
+    software_eos: 30-Jun-22
+    hardware_eos: 30-Jun-25
+    software_version: V200R011C10
+  - hardware_type: S5328C-EI-24S
+    software_eos: 30-Jun-19
+    hardware_eos: 30-Jun-22
+    software_version: V200R003C00
+  - hardware_type: S5328C-EI-24S
+    software_eos: 30-Jun-25
+    hardware_eos: 30-Jun-22
+    software_version: V200R005C00
+  - hardware_type: S5328C-EI-24S
+    software_eos: 30-Jun-22
+    hardware_eos: 30-Jun-22
+    software_version: V200R011C10
+  - hardware_type: S5320-28X-LI-DC
+    software_eos: 30-Jun-22
+    hardware_eos: 31-Dec-26
+    software_version: V200R011C10SPC600
+  - hardware_type: S5335-L24T4XE-A-V2
+    software_eos: 31-Dec-24
+    hardware_eos: 30-Jun-34
+    software_version: V600R022C10
+  - hardware_type: S5335-S24T4X
+    software_eos: 30-Jun-24
+    hardware_eos: 30-Jun-34
+    software_version: V200R019C10SPC500
+  - hardware_type: S5320-56C-EI-48S-DC
+    software_eos: 30-Jun-24
+    hardware_eos: 30-Jun-25
+    software_version: V200R019C10SPC500
+  - hardware_type: S5328C-EI
+    software_eos: 30-Jun-25
+    hardware_eos: 30-Jun-22
+    software_version: V200R005C00SPC500
+  - hardware_type: S3352P-EI
+    software_eos: TBC
+    hardware_eos: 30-Jun-23
+    software_version: V100R003C00SPC301
+  - hardware_type: S5331-S48T4X-A
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-36
+    software_version: V200R024C00
+  - hardware_type: S5331-H48T4XC
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-36
+    software_version: V200R021C00
+  - hardware_type: S5335-L48T4X-A1
+    software_eos: 30-Jun-25
+    hardware_eos: 30-Jun-34
+    software_version: V200R021C00
+  - hardware_type: S5335-L48T4X-A1
+    software_eos: TBC
+    hardware_eos: 30-Jun-34
+    software_version: V200R022C00
+  - hardware_type: 'S6320-26Q-EI-24S-DC
+
+      S2300&S3300&S5300&S6300'
+    software_eos: 30-Jun-24
+    hardware_eos: 31-Dec-32
+    software_version: V200R019C10SPC500
+  - hardware_type: 'S6330-H48X6C
+
+      S2300&S3300&S5300&S6300'
+    software_eos: 30-Jun-23
+    hardware_eos: 31-Dec-35
+    software_version: V200R020C10SPC500
+  - hardware_type: S6320-26Q-EI-24S-AC
+    software_eos: TBC
+    hardware_eos: 31-Dec-26
+    software_version: V200R010C00SPC600
+  - hardware_type: S6330-H24X6C
+    software_eos: 31-Dec-25
+    hardware_eos: 31-Dec-35
+    software_version: V200R022C00
+  - hardware_type: S6330-H48X6C
+    software_eos: 31-Dec-25
+    hardware_eos: 31-Dec-35
+    software_version: V200R022C00
+  - hardware_type: 'S6330-H24X6C
+
+      S2300&S3300&S5300&S6300'
+    software_eos: 31-Dec-25
+    hardware_eos: 31-Dec-35
+    software_version: V200R022C00
+  - hardware_type: 'S6330-H24X6C
+
+      S2300&S3300&S5300&S6300'
+    software_eos: 30-Jun-22
+    hardware_eos: 31-Dec-35
+    software_version: V200R019C00
+  - hardware_type: S9303
+    software_eos: 30-Jun-22
+    hardware_eos: 31-Dec-34
+    software_version: V200R010C00SPC600
+  - hardware_type: S9303
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-34
+    software_version: V200R022C00
+  - hardware_type: S9306
+    software_eos: 30-Jun-22
+    hardware_eos: 31-Dec-34
+    software_version: V200R010C00SPC600
+  - hardware_type: S9306
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-34
+    software_version: V200R022C00
+  - hardware_type: S9306
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-34
+    software_version: V200R022C00
+  - hardware_type: S9306
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-34
+    software_version: V200R024C00
+  - hardware_type: S9306
+    software_eos: 30-Jun-24
+    hardware_eos: 31-Dec-34
+    software_version: V200R019C10SPC500
+  - hardware_type: S9306
+    software_eos: 30-Jun-24
+    hardware_eos: 31-Dec-34
+    software_version: V200R019C10SPC500
+  - hardware_type: S9312
+    software_eos: 30-Jun-22
+    hardware_eos: 31-Dec-34
+    software_version: V200R010C00SPC600
+  - hardware_type: SIG9800-X16
+    software_eos: 31-Dec-24
+    hardware_eos: 31-Dec-24
+    software_version: V300R009C10SPC600
+  - hardware_type: NE40E-X16A(V8)
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-36
+    software_version: V800R023C00SPC500
+  - hardware_type: NE40E-X16A(V8)
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-36
+    software_version: V800R024C00SPC500
+  - hardware_type: NE9000-20
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-35
+    software_version: V800R023C00SPC500
+  - hardware_type: 'NetEngine 8000 F1A-8H20Q '
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-38
+    software_version: V800R023C00SPC500
+  - hardware_type: 'NetEngine 8000 F1A-8H20Q '
+    software_eos: 30-Jun-24
+    hardware_eos: 31-Dec-38
+    software_version: V800R012C10SPC300
+  - hardware_type: NE8000 F1A-8H20Q
+    software_eos: 30-Jun-24
+    hardware_eos: 31-Dec-38
+    software_version: V800R012C10SPC300
+  - hardware_type: NE8000 F1A-8H20Q
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-38
+    software_version: V800R022C00SPC600
+  - hardware_type: NetEngine 8000 M14
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-38
+    software_version: V800R022C10SPC500
+  - hardware_type: NetEngine 8000 M14
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-38
+    software_version: V800R023C00SPC500
+  - hardware_type: NetEngine 8000 X8
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-40
+    software_version: V800R023C00SPC500
+  - hardware_type: NetEngine 8000 X8
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-40
+    software_version: V800R024C00SPC500
+  - hardware_type: NetEngine 8000 X16
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-40
+    software_version: V800R023C00SPC500
+  - hardware_type: CE12804S
+    software_eos: 30-Jun-28
+    hardware_eos: 30-Jun-28
+    software_version: V200R024C00
+  - hardware_type: CE12804
+    software_eos: 31-Dec-23
+    hardware_eos: 31-Dec-26
+    software_version: V200R005C10SPC800
+  - hardware_type: CE16804
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-39
+    software_version: V200R024C00SPC500
+  - hardware_type: CE16804
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-39
+    software_version: V200R024C00SPC500
+  - hardware_type: CE16804
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-39
+    software_version: V200R024C00SPC500
+  - hardware_type: S5720-36C-PWR-EI-AC
+    software_eos: 31-Dec-25
+    hardware_eos: 31-Dec-25
+    software_version: v200r019c10spc500
+  - hardware_type: NCE-IP&TXM
+    software_eos: 31-Dec-26
+    hardware_eos: null
+    software_version: V100R024C10spc100SPC100
+  - hardware_type: eSight
+    software_eos: 31-Dec-25
+    hardware_eos: 31-Dec-30
+    software_version: eSight_21.2.0.SPC060
+  - hardware_type: eSight
+    software_eos: 31-Dec-25
+    hardware_eos: 31-Dec-30
+    software_version: eSight_21.2.0.SPC060
+  - hardware_type: ATN910D-A
+    software_eos: 30-Jun-27
+    hardware_eos: 31-Dec-38
+    software_version: V800R023C00SPC500
+  - hardware_type: ATN910D-A
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-38
+    software_version: V800R024C00SPC500
+  - hardware_type: S6730-H48X6C
+    software_eos: 30-Jun-26
+    hardware_eos: 31-Dec-30
+    software_version: V200R022C00
+  - hardware_type: S6730-H48X6C
+    software_eos: 30-Jun-28
+    hardware_eos: 31-Dec-30
+    software_version: V200R024C00

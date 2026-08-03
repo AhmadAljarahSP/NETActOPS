@@ -1,0 +1,97 @@
+---
+# push_bgp_config.yml — parameterized BGP neighbor configuration push, via
+# NETAct_backend's POST /devices/{id}/push-config (the same jump-host CLI
+# session mechanism the existing automation engine already uses).
+#
+# WRITE ACTION. Requires explicit --extra-vars, asserted up front, no
+# usable defaults — a bare/careless invocation fails immediately.
+#
+# NOTE on Juniper: intentionally NOT included here. Backend's
+# push_config_to_device (core/backend/collector.py, ported from the
+# existing automation engine) enters config mode via "configure terminal"
+# and exits via "end"/"commit"+"end" — that's Cisco/Huawei-shaped and does
+# not match Junos's actual configuration paradigm ("configure" + "set ..."
+# statements + "commit"). This is a real, pre-existing gap in the function
+# being reused, not something silently worked around — generating
+# "correct-looking" config that would misbehave on a real Junos device
+# would be worse than omitting it. Junos write support needs backend's
+# push_config_to_device to grow a real Junos branch first.
+#
+# Usage:
+#   ansible-playbook playbooks/push_bgp_config.yml -l cisco_iosxr \
+#     -e bgp_local_as=65001 -e bgp_peer_ip=10.1.1.2 -e bgp_peer_remote_as=65002
+
+- name: Validate required variables before touching any device
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    netact_playbook_mode: write
+  tasks:
+    - name: Assert BGP parameters were provided
+      ansible.builtin.assert:
+        that:
+          - bgp_local_as is defined
+          - bgp_peer_ip is defined
+          - bgp_peer_remote_as is defined
+        fail_msg: >-
+          Required vars missing. Pass -e bgp_local_as=<AS> -e bgp_peer_ip=<IP>
+          -e bgp_peer_remote_as=<AS> — refusing to proceed with no target
+          parameters rather than guessing or defaulting.
+
+- name: Push BGP neighbor config — Cisco IOS-XR / generic IOS
+  hosts: cisco_iosxr:cisco_ios
+  gather_facts: false
+  vars:
+    # backend enters "configure terminal" automatically for non-Huawei
+    # vendors and exits with "commit\nend" (XR) or "end\nwrite memory"
+    # (generic IOS) — this is just the inner config-mode lines.
+    bgp_config_text: |
+      router bgp {{ bgp_local_as }}
+      neighbor {{ bgp_peer_ip }} remote-as {{ bgp_peer_remote_as }}
+  tasks:
+    - name: POST config to backend push-config gateway
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/push-config"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          config_text: "{{ bgp_config_text }}"
+        status_code: [200, 400, 404]
+        timeout: 60
+      register: push_result
+
+    - name: Report outcome
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ push_result.json }}"
+
+- name: Push BGP neighbor config — Huawei VRP
+  hosts: huawei
+  gather_facts: false
+  vars:
+    # Real, verified VRP syntax — confirmed against the vendor's own NE9000
+    # IP Routing Configuration Guide during this project's KB ingestion.
+    # Backend enters "system-view" automatically for Huawei and commits
+    # with "commit\nreturn" — this is just the inner config lines.
+    bgp_config_text: |
+      bgp {{ bgp_local_as }}
+      peer {{ bgp_peer_ip }} as-number {{ bgp_peer_remote_as }}
+  tasks:
+    - name: POST config to backend push-config gateway
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/push-config"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          config_text: "{{ bgp_config_text }}"
+        status_code: [200, 400, 404]
+        timeout: 60
+      register: push_result
+
+    - name: Report outcome
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ push_result.json }}"

@@ -1,0 +1,34 @@
+---
+# backup_config.yml — orchestrates NETAct_backend's existing, already-safe
+# backup mechanism, rather than reimplementing config collection here.
+#
+# Usage:
+#   ansible-playbook playbooks/backup_config.yml -l cisco_iosxr
+#
+# This calls the SAME POST /backup/{device_id} endpoint the rest of the
+# platform already uses (core/backend/app.py) — results are saved exactly
+# where every other backup already lives (git-repo/backups/), with full
+# existing diff/history tracking. Ansible's role here is pure orchestration
+# (which hosts, in what order), not device access.
+
+- name: Trigger backend backup for every targeted host
+  hosts: all
+  gather_facts: false
+  vars:
+    # A backup only ever reads a device's running-config — never calls
+    # push-config — so it's genuinely read_only despite being a "backup"
+    # action rather than a diagnostic one.
+    netact_playbook_mode: read_only
+  tasks:
+    - name: "Trigger backup via backend: {{ netact_device_id }}"
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/backup/{{ netact_device_id }}"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        status_code: [200, 400, 404]
+      register: backup_result
+
+    - name: Report outcome
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ backup_result.json }}"

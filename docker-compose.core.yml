@@ -1,0 +1,138 @@
+###############################################################################
+# NETAct — Compose 1: Core Platform
+#
+# Creates the shared Docker volume and network used by ALL other stacks.
+# MUST be started first.
+#
+# Start:  docker compose -f docker-compose.core.yml up -d --build
+# Stop:   docker compose -f docker-compose.core.yml down
+###############################################################################
+
+name: netact
+
+services:
+
+  git:
+    build:
+      context: .
+      dockerfile: Dockerfile.git
+    container_name: NETAct_git
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    volumes:
+      - git-repo:/git/repo
+      - ./core/scripts:/scripts
+      - ./core/backend/devices:/git/repo/devices:ro
+    command: >
+      sh -c "
+        git config --global user.email 'backup-system@local' &&
+        git config --global user.name 'Config Backup System' &&
+        mkdir -p /git/repo/backups /git/repo/healthchecks /git/repo/odf &&
+        cd /git/repo &&
+        if [ ! -d .git ]; then
+          git init &&
+          echo '# Network Configuration Backups and Healthchecks' > README.md &&
+          git add README.md &&
+          git commit -m 'Initial commit: Network config backup system'
+        fi &&
+        if [ -d /git/repo/devices ] && [ \"$$(ls -A /git/repo/devices 2>/dev/null)\" ]; then
+          git add devices/ &&
+          git diff --cached --quiet || git commit -m 'Auto-sync: device registry update'
+        fi &&
+        uvicorn git_api:app --app-dir /scripts --host 0.0.0.0 --port 8002
+      "
+    networks:
+      - config-net
+
+  backend:
+    build: ./core/backend
+    container_name: NETAct_backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      GIT_REPO_PATH: /git/repo
+      GIT_BACKUPS_PATH: /git/repo/backups
+      GIT_HEALTHCHECKS_PATH: /git/repo/healthchecks
+      BACKUP_INTERVAL_HOURS: "6"
+      OLLAMA_HOST: http://NETAct_ollama_exporter:11435
+      OLLAMA_MODEL: qwen2.5-coder:7b
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - git-repo:/git/repo
+      - ./core/backend:/app
+      - ./core/db:/app/db
+    depends_on:
+      - git
+    networks:
+      - config-net
+
+  automation:
+    build: ./core/automation
+    container_name: NETAct_Automation
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      GIT_REPO_PATH: /git/repo
+      GIT_BACKUPS_PATH: /git/repo/backups
+      GIT_HEALTHCHECKS_PATH: /git/repo/healthchecks
+      OLLAMA_HOST: http://NETAct_ollama_exporter:11435
+      OLLAMA_MODEL: qwen2.5-coder:7b
+    ports:
+      - "127.0.0.1:8003:8003"
+    volumes:
+      - git-repo:/git/repo
+      - ./core/automation:/app
+      - ./core/backend/devices:/app/devices:ro
+      - ./core/backend/commands:/app/commands:ro
+      - ./core/backend/showcommands:/app/showcommands:ro
+      - ./core/backend/async_jump_transport.py:/app/async_jump_transport.py:ro
+      - ./core/backend/collector.py:/app/collector.py:ro
+      - ./core/backend/git_manager.py:/app/git_manager.py:ro
+    depends_on:
+      - git
+    networks:
+      - config-net
+
+  frontend:
+    build: ./core/frontend
+    container_name: NETAct_frontend
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "127.0.0.1:3000:443"
+    volumes:
+      - ./DeepConsol/certs:/etc/ssl/netact:ro
+    depends_on:
+      - backend
+    networks:
+      - config-net
+
+  mcp-server:
+    build:
+      context: ./core/mcp_server
+    container_name: NETAct_MCP_Server
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      GIT_REPO_PATH: /git/repo
+      # is_tool_enabled() in server.py reads mcp_runtime_state from this DB —
+      # without this mount/override it falls back to a path this container
+      # never had access to and silently treats every tool as enabled.
+      DB_PATH: /app/db/copilot_history.db
+    volumes:
+      - git-repo:/git/repo:rw
+      - ./core/backend:/backend:ro
+      - ./core/db:/app/db:ro
+    ports:
+      - "127.0.0.1:5001:5001"
+    networks:
+      - config-net
+
+volumes:
+  git-repo:
+
+networks:
+  config-net:
+    driver: bridge

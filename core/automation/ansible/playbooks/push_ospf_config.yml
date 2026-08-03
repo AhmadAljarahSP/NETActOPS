@@ -1,0 +1,124 @@
+---
+# push_ospf_config.yml — parameterized OSPF area/network configuration
+# push, via NETAct_backend's POST /devices/{id}/push-config.
+#
+# WRITE ACTION. Same required-vars assertion posture as push_bgp_config.yml.
+# Juniper intentionally omitted — see push_bgp_config.yml's note on why.
+#
+# The baseline vs. supplementary distinction here is deliberate and
+# evidence-based: this project traced a real bug where the local AI
+# assistant presented "sham-hello enable" (a supplementary, optional OSPF
+# feature per the vendor's own docs) as if it were the required mechanism
+# for establishing basic neighborship, when the actual baseline is
+# enabling the process + area + network statement. This playbook
+# implements the real baseline as the only required path; sham-hello is
+# exposed strictly as an opt-in extra (ospf_enable_sham_hello), Huawei only.
+#
+# Usage:
+#   ansible-playbook playbooks/push_ospf_config.yml -l cisco_iosxr \
+#     -e ospf_process_id=1 -e ospf_area=0 -e ospf_network=10.1.1.0 -e ospf_wildcard=0.0.0.255
+
+- name: Validate required variables before touching any device
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    netact_playbook_mode: write
+  tasks:
+    - name: Assert OSPF parameters were provided
+      ansible.builtin.assert:
+        that:
+          - ospf_process_id is defined
+          - ospf_area is defined
+          - ospf_network is defined
+          - ospf_wildcard is defined
+        fail_msg: >-
+          Required vars missing. Pass -e ospf_process_id=<id> -e ospf_area=<area>
+          -e ospf_network=<net> -e ospf_wildcard=<wildcard> — refusing to
+          proceed rather than guessing target parameters.
+
+- name: Configure baseline OSPF — Cisco IOS-XR
+  hosts: cisco_iosxr
+  gather_facts: false
+  vars:
+    # IOS-XR's real nested syntax: router ospf -> area -> network/prefix.
+    ospf_config_text: |
+      router ospf {{ ospf_process_id }}
+       area {{ ospf_area }}
+        network {{ ospf_network }}/{{ ospf_wildcard }}
+  tasks:
+    - name: POST config to backend push-config gateway
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/push-config"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          config_text: "{{ ospf_config_text }}"
+        status_code: [200, 400, 404]
+        timeout: 60
+      register: push_result
+
+    - name: Report outcome
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ push_result.json }}"
+
+- name: Configure baseline OSPF — generic Cisco IOS/IOS-XE
+  hosts: cisco_ios
+  gather_facts: false
+  vars:
+    # Classic IOS syntax: single network statement with area inline.
+    ospf_config_text: |
+      router ospf {{ ospf_process_id }}
+       network {{ ospf_network }} {{ ospf_wildcard }} area {{ ospf_area }}
+  tasks:
+    - name: POST config to backend push-config gateway
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/push-config"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          config_text: "{{ ospf_config_text }}"
+        status_code: [200, 400, 404]
+        timeout: 60
+      register: push_result
+
+    - name: Report outcome
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ push_result.json }}"
+
+- name: Configure baseline OSPF — Huawei VRP
+  hosts: huawei
+  gather_facts: false
+  vars:
+    # Real, verified VRP baseline syntax — confirmed against the vendor's
+    # own NE9000 IP Routing Configuration Guide (ospf <id> -> area <area> ->
+    # network <ip> <wildcard> -> commit). This is the actual prerequisite
+    # procedure, not the sham-hello supplementary feature.
+    ospf_config_text: |
+      ospf {{ ospf_process_id }}
+      area {{ ospf_area }}
+      network {{ ospf_network }} {{ ospf_wildcard }}
+      {% if ospf_enable_sham_hello | default(false) %}
+      sham-hello enable
+      {% endif %}
+  tasks:
+    - name: POST config to backend push-config gateway
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/push-config"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          config_text: "{{ ospf_config_text }}"
+        status_code: [200, 400, 404]
+        timeout: 60
+      register: push_result
+
+    - name: Report outcome
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ push_result.json }}"

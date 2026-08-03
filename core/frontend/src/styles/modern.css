@@ -1,0 +1,542 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&family=Satoshi:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --background-deep: #1A1A1A;
+  --background: #1A1A1A;
+  --surface: #343434;
+  --surface-solid: #343434;
+  --surface-container: #1A1A1A;
+  --surface-container-high: #313131;
+  --surface-container-highest: #343434;
+  --surface-container-lowest: #121212;
+  --border-whisper: #313131;
+  --border-muted: #4A4A4A;
+  --primary: #F4F4F4;
+  --on-primary: #1A1A1A;
+  --primary-accent: #313131;
+  --primary-glow: rgba(49, 49, 49, 0.35);
+  --text-high-contrast: #F4F4F4;
+  --text-muted: #828282;
+  --text-inactive: #8D8D8D;
+  --status-danger: #ef4444;
+  --status-warning: #f59e0b;
+  --status-success: #4edea3;
+  --status-info: #3b82f6;
+  
+  --font-headline: 'Geist', -apple-system, sans-serif;
+  --font-body: 'Satoshi', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* Style active navigation icons to match active/white text */
+a.active .material-symbols-outlined {
+  color: var(--text-high-contrast) !important;
+}
+
+
+
+
+/* Global Reset overrides */
+html, body {
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--background-deep) !important;
+  font-family: var(--font-body);
+  font-size: var(--font-size-base, 14px);
+  color: var(--text-muted);
+}
+
+/* Modern Dashboard container styling with viewport auto-scaling */
+.modern-dashboard {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  font-size: var(--font-size-base, 14px);
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-stack-default, 20px);
+  box-sizing: border-box;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Connection Badges */
+.connection-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.connection-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(16, 185, 129, 0.04);
+  border: 1px solid rgba(16, 185, 129, 0.12);
+  border-radius: 6px;
+  color: var(--status-success);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.connection-badge .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--status-success);
+  box-shadow: 0 0 10px var(--status-success);
+}
+
+.connection-badge.pulsing .dot {
+  animation: pulse-glow 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; transform: scale(0.95); box-shadow: 0 0 4px var(--status-success); }
+  50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 12px var(--status-success); }
+}
+
+/* KPI Card layouts */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.metric-card {
+  background: var(--surface);
+  border: 1px solid var(--border-whisper);
+  padding: 18px 22px;
+  border-radius: var(--border-radius-md);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  transition: var(--transition-smooth);
+}
+
+.metric-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-muted);
+  background: var(--surface-container-high);
+}
+
+.metric-card:hover::before {
+  background: var(--accent-color, var(--primary-accent));
+}
+
+.metric-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.metric-card-title {
+  font-family: var(--font-headline);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.metric-card-icon {
+  color: var(--text-muted);
+  font-size: 18px;
+  opacity: 0.7;
+}
+
+.metric-card-value {
+  font-family: var(--font-mono);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text-high-contrast);
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.metric-card-sub {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.metric-card-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  width: 100%;
+}
+
+.metric-card-progress-bar {
+  height: 100%;
+  background-color: var(--accent-color, var(--primary-accent));
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Charts Grid with flexible viewport scaling */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  /* auto here is safe by default: every card in non-auto-scale mode passes
+     UnifiedChart a fixed pixel height, so row height is just "as tall as
+     that fixed-height content" — no ambiguity. */
+  grid-auto-rows: minmax(320px, auto);
+  gap: 16px;
+  width: 100%;
+}
+
+/* Auto-scale mode: charts ask for height:100% of their card to fill
+   available space. That only resolves (rather than collapsing to 0, or —
+   worse — growing without bound, which is what actually happened here:
+   child says "100% of parent", row height says "auto = tallest child",
+   two unresolved references chasing each other blew a card out past
+   200,000px) if the row height is DEFINITE, not auto. Fixed px, not
+   minmax(_, auto), while this mode is active. */
+.charts-grid.auto-scale {
+  grid-auto-rows: 380px;
+}
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border-whisper);
+  padding: 24px;
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-smooth);
+}
+
+.chart-card:hover {
+  border-color: var(--border-muted);
+  background: var(--surface-container);
+}
+
+.chart-card.col-8 {
+  grid-column: span 12;
+}
+@media (min-width: 1024px) {
+  .chart-card.col-8 {
+    grid-column: span 8;
+  }
+}
+
+.chart-card.col-4 {
+  grid-column: span 12;
+}
+@media (min-width: 1024px) {
+  .chart-card.col-4 {
+    grid-column: span 4;
+  }
+}
+
+.chart-card.col-6 {
+  grid-column: span 12;
+}
+@media (min-width: 1024px) {
+  .chart-card.col-6 {
+    grid-column: span 6;
+  }
+}
+
+.chart-card.col-12 {
+  grid-column: span 12;
+}
+
+/* Admin drag-to-reorder (Dashboard charts grid) */
+.chart-drag-handle {
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  color: var(--text-inactive);
+  border-radius: 4px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.chart-drag-handle:hover {
+  color: var(--text-high-contrast);
+  background: var(--surface-container);
+}
+.chart-card[draggable="true"]:active {
+  cursor: grabbing;
+}
+.chart-card.chart-drop-target {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-glow, rgba(99, 102, 241, 0.25));
+}
+
+.chart-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.chart-title {
+  font-family: var(--font-headline);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-high-contrast);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.chart-subtitle {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 4px;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+/* Controls and Buttons */
+.btn-toggle-group {
+  display: flex;
+  gap: 4px;
+  background: rgba(2, 6, 32, 0.4);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid var(--border-whisper);
+}
+
+.btn-toggle {
+  padding: 5px 12px;
+  font-size: 11px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+}
+
+.btn-toggle:hover {
+  color: var(--text-high-contrast);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.btn-toggle.active {
+  background: var(--primary-accent);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+/* Table views in Cockpit mode */
+.data-table-panel {
+  background: var(--surface);
+  border: 1px solid var(--border-whisper);
+  border-radius: var(--border-radius-lg);
+  padding: 24px;
+  overflow: hidden;
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.modern-table th {
+  font-family: var(--font-headline);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-whisper);
+  background: rgba(2, 6, 32, 0.25);
+}
+
+.modern-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-whisper);
+  color: var(--text-high-contrast);
+  font-size: 13px;
+  transition: var(--transition-smooth);
+}
+
+.modern-table tbody tr {
+  transition: var(--transition-smooth);
+}
+
+.modern-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.text-mono {
+  font-family: var(--font-mono) !important;
+  font-size: 12px;
+}
+
+/* Custom layout adjustments */
+.toolbar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.header-title-box h2 {
+  font-family: var(--font-headline);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-high-contrast);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.header-title-box p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Custom scrollbars */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: rgba(2, 6, 32, 0.2);
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--border-whisper);
+  border-radius: 10px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: var(--border-muted);
+}
+
+/* Auto-scaling container for charts */
+.chart-container-wrapper {
+  flex: 1;
+  min-height: 240px;
+  width: 100%;
+  position: relative;
+}
+
+/* Slide-in drawer from the right */
+.slide-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 480px;
+  max-width: 90vw;
+  background: var(--surface-solid);
+  border-left: 1px solid var(--border-whisper);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.slide-drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.drawer-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Sidebar Nav Link Custom Styles */
+.sidebar-nav-link {
+  transition: var(--transition-smooth) !important;
+  color: var(--sidebar-inactive-text) !important;
+}
+
+.sidebar-nav-link:hover {
+  background: var(--sidebar-hover-bg) !important;
+  color: var(--sidebar-active-text) !important;
+  transform: translateX(4px);
+}
+
+.sidebar-nav-link:hover .material-symbols-outlined {
+  color: var(--icon-active-color) !important;
+}
+
+.sidebar-nav-link.active {
+  background: linear-gradient(90deg, var(--sidebar-active-bg-start) 0%, var(--sidebar-active-bg-end) 100%) !important;
+  color: var(--sidebar-active-text) !important;
+  border-left: 4px solid var(--sidebar-active-indicator) !important;
+  border-radius: var(--border-radius-md) !important;
+}
+
+.sidebar-nav-link.active .material-symbols-outlined {
+  color: var(--icon-active-color) !important;
+}
+
+.sidebar-nav-link .material-symbols-outlined {
+  color: var(--icon-color) !important;
+  transition: var(--transition-smooth);
+}
+

@@ -1,0 +1,84 @@
+---
+# solidserver_ipam_write.yml — generic IPAM write action pass-through to
+# NETAct_backend's POST /ipam/solidserver/write, for an EfficientIP
+# SOLIDserver DDI/IPAM appliance. Ansible never talks to the appliance
+# directly, same as every other playbook here — see
+# core/backend/ipam_solidserver.py for the allowlisted method names this
+# can actually call and the SOLIDSERVER_HOST/USER/PASSWORD env vars backend
+# needs configured before this will do anything but 503.
+#
+# WRITE ACTION. sds_method must be one of: ip_site_add, ip_site_delete,
+# ip_subnet_add, ip_subnet_delete, ip_add, ip_delete — backend rejects
+# anything else with 400 regardless of what this playbook sends.
+#
+# Per EfficientIP's official "SOLIDserver API: REST Reference Guide"
+# (version 7.3, revision #100648): creation AND update are the SAME
+# service for every object type here (*_add) — there is no separate
+# *_create/*_update service. Whether a call adds a new object or edits an
+# existing one depends on the params you pass (e.g. supplying an existing
+# site_id/subnet_id/ip_id edits it; omitting an identifier and supplying
+# enough new details creates one). Add an explicit add_flag: new_only or
+# add_flag: edit_only to sds_params if you need to force one behavior and
+# refuse the other (e.g. avoid silently editing something that already
+# exists). GET /ipam/solidserver/methods on backend returns each method's
+# exact required params live, straight from this same reference.
+#
+# sds_params is required here (unlike the read flow) — every write method
+# needs at least its identifying/target params to mean anything (e.g.
+# ip_add needs hostaddr + site_name/site_id at minimum), so an empty-params
+# write is refused up front rather than sent and left to fail confusingly
+# on the appliance side.
+#
+# NOTE on "hosts: all" — see solidserver_ipam_read.yml's note; same
+# reasoning applies here.
+#
+# Usage:
+#   ansible-playbook playbooks/solidserver_ipam_write.yml -l cisco_iosxr \
+#     -e sds_method=ip_add \
+#     -e sds_params="{\"site_name\": \"Default\", \"hostaddr\": \"10.1.1.50\", \"name\": \"new-host\"}"
+#
+#   ansible-playbook playbooks/solidserver_ipam_write.yml -l cisco_iosxr \
+#     -e sds_method=ip_subnet_add \
+#     -e sds_params="{\"site_name\": \"Default\", \"subnet_name\": \"lab-net\", \"subnet_addr\": \"10.1.1.0\", \"subnet_prefix\": \"24\"}"
+
+- name: Validate required variables before writing
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    netact_playbook_mode: write
+  tasks:
+    - name: Assert IPAM write parameters were provided
+      ansible.builtin.assert:
+        that:
+          - sds_method is defined
+          - sds_params is defined
+        fail_msg: >-
+          Required vars missing. Pass -e sds_method=<ip_site_add|ip_site_delete|
+          ip_subnet_add|ip_subnet_delete|ip_add|ip_delete>
+          -e sds_params='{"key":"value",...}' — refusing to send a write action
+          with no target parameters rather than guessing. See
+          GET /ipam/solidserver/methods on backend for each method's
+          required params.
+
+- name: Apply SOLIDserver IPAM write action via backend gateway
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: POST write action to backend SOLIDserver gateway
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/ipam/solidserver/write"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: "{{ sds_method }}"
+          params: "{{ sds_params | from_json }}"
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: sds_result
+
+    - name: Report outcome
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ sds_result.json }}"

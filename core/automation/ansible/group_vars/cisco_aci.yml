@@ -1,0 +1,6 @@
+# Cisco ACI (cisco_aci device group, e.g. 172.16.92.x) — REST/APIC-based,
+# same honest caveat as f5.yml: backend's gateway is CLI-over-SSH only, so
+# ACI isn't reachable through it yet either. No ACI tasks exist in
+# playbooks/ yet.
+netact_vendor_label: cisco_aci
+netact_reachable_via_backend: false

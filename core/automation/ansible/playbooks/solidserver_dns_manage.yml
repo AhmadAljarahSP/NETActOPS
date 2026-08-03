@@ -1,0 +1,263 @@
+---
+# solidserver_dns_manage.yml — end-to-end DNS provisioning workflow:
+# pre-check the target server, optionally deploy a TSIG key, create/edit a
+# view and a zone, restrict transfers to the TSIG key if one was deployed,
+# add resource records, optionally sign the zone with DNSSEC, then verify
+# by counting/listing the records that ended up in the zone.
+#
+# Every step calls NETAct_backend's sanitized DNS gateway
+# (POST /dns/solidserver/read and /write) — Ansible never talks to the
+# SOLIDserver appliance directly, same as every other playbook here. See
+# core/backend/dns_solidserver.py for the method allowlist this is built
+# from, and solidserver_dns_read.yml/solidserver_dns_write.yml for the
+# generic single-call equivalents this workflow's steps are built on top
+# of. WRITE ACTION overall (creates/edits real DNS objects when run for
+# real) — every *_add call below uses add_flag: new_edit for idempotency,
+# per the reference guide's own recommendation.
+#
+# Required extra-vars:
+#   dns_server_name      FQDN or name of the target DNS server (dns_name)
+#   dnszone_name          Zone to create/edit, e.g. example.com
+#
+# Optional extra-vars:
+#   dnszone_type          master (default) | slave | forward | stub | hint | delegation-only
+#   dnsview_name           default (default) | any existing/new view name
+#   dns_tsig_key_name      if set, deploys a TSIG key and restricts zone
+#                          transfers to it (dns_key_add + dns_zone_param_add)
+#   dns_records            list of {rr_name, rr_type, value1, value2..value7}
+#                          dicts to add to the zone (dns_rr_add) — default []
+#   dns_enable_dnssec      true|false (default false) — signs the zone with
+#                          DNSSEC once records are in place
+#   dnssec_zsk_algorithm   default rsasha256
+#   dnssec_ksk_algorithm   default rsasha256
+#
+# Usage:
+#   ansible-playbook playbooks/solidserver_dns_manage.yml -l cisco_iosxr \
+#     -e dns_server_name=ns1.example.com -e dnszone_name=example.com \
+#     -e dns_records='[{"rr_name":"www.example.com","rr_type":"A","value1":"10.1.1.50"}]'
+
+- name: Validate required variables before doing anything
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    netact_playbook_mode: write
+  tasks:
+    - name: Assert core DNS management parameters were provided
+      ansible.builtin.assert:
+        that:
+          - dns_server_name is defined
+          - dnszone_name is defined
+        fail_msg: >-
+          Required vars missing. Pass -e dns_server_name=<fqdn-of-dns-server>
+          -e dnszone_name=<zone-to-manage> — refusing to guess which server
+          or zone to provision. See this file's header comment for the full
+          list of optional extra-vars (dnsview_name, dns_tsig_key_name,
+          dns_records, dns_enable_dnssec, ...).
+
+- name: Provision DNS view, zone, records, and (optionally) DNSSEC
+  hosts: all
+  gather_facts: false
+  vars:
+    dnszone_type: "{{ dnszone_type | default('master') }}"
+    dnsview_name: "{{ dnsview_name | default('default') }}"
+    dns_records: "{{ dns_records | default([]) }}"
+    dns_enable_dnssec: "{{ dns_enable_dnssec | default(false) }}"
+  tasks:
+    # 1. Pre-check: confirm the target server is known to backend before
+    #    attempting to provision anything against it.
+    - name: "1. Pre-check: retrieve DNS server info"
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/dns/solidserver/read"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: dns_server_list
+          params:
+            WHERE: "dns_name='{{ dns_server_name }}'"
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: server_check
+
+    - name: "1.1 Assert the DNS server exists"
+      ansible.builtin.assert:
+        that:
+          - server_check.json.status == 'success'
+          - server_check.json.result | length > 0
+        fail_msg: >-
+          DNS server '{{ dns_server_name }}' was not found via
+          dns_server_list — refusing to provision a view/zone against a
+          server backend can't confirm exists. Response:
+          {{ server_check.json }}
+
+    # 2. Security: optionally deploy a TSIG key up front, so the zone's
+    #    transfer restriction (step 6) can reference it immediately.
+    - name: "2. Security: deploy TSIG key for secured zone transfers"
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/dns/solidserver/write"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: dns_key_add
+          params:
+            dnskey_name: "{{ dns_tsig_key_name }}"
+            dns_name: "{{ dns_server_name }}"
+            add_flag: new_edit
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: tsig_result
+      when: (dns_tsig_key_name | default('')) != ''
+
+    - name: "2.1 Report TSIG key deployment"
+      ansible.builtin.debug:
+        msg: "TSIG key '{{ dns_tsig_key_name }}': {{ tsig_result.json }}"
+      when: (dns_tsig_key_name | default('')) != ''
+
+    # 3. View management: create or edit the target view.
+    - name: "3. View management: create or edit DNS view"
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/dns/solidserver/write"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: dns_view_add
+          params:
+            dnsview_name: "{{ dnsview_name }}"
+            dns_name: "{{ dns_server_name }}"
+            add_flag: new_edit
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: view_result
+
+    - name: "3.1 Report view result"
+      ansible.builtin.debug:
+        msg: "View '{{ dnsview_name }}': {{ view_result.json }}"
+
+    # 4. Zone lifecycle: create or edit the authoritative zone.
+    - name: "4. Zone lifecycle: create or edit authoritative zone"
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/dns/solidserver/write"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: dns_zone_add
+          params:
+            dnszone_name: "{{ dnszone_name }}"
+            dnszone_type: "{{ dnszone_type }}"
+            dnsview_name: "{{ dnsview_name }}"
+            dns_name: "{{ dns_server_name }}"
+            add_flag: new_edit
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: zone_result
+
+    - name: "4.1 Assert zone provisioning succeeded before adding records"
+      ansible.builtin.assert:
+        that:
+          - zone_result.json.status == 'success'
+        fail_msg: "Zone provisioning failed, refusing to continue: {{ zone_result.json }}"
+
+    # 5. Security policy: if a TSIG key was deployed, restrict transfers
+    #    to it via a zone-level allow-transfer option.
+    - name: "5. Security policy: restrict zone transfers to the TSIG key"
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/dns/solidserver/write"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: dns_zone_param_add
+          params:
+            dnszone_name: "{{ dnszone_name }}"
+            dns_name: "{{ dns_server_name }}"
+            dnszoneparam_name: allow-transfer
+            dnszoneparam_value: "key {{ dns_tsig_key_name }};"
+            add_flag: new_edit
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: transfer_policy_result
+      when: (dns_tsig_key_name | default('')) != ''
+
+    # 6. Record management: add every record in dns_records.
+    - name: "6. Record management: add resource records"
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/dns/solidserver/write"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: dns_rr_add
+          params: >-
+            {{
+              {'dnszone_name': dnszone_name, 'dns_name': dns_server_name, 'add_flag': 'new_edit'}
+              | combine(item)
+            }}
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: rr_results
+      loop: "{{ dns_records }}"
+      loop_control:
+        label: "{{ item.rr_name | default('record') }}"
+
+    # 7. Cryptography: optionally sign the zone with DNSSEC once records exist.
+    - name: "7. Cryptography: enable DNSSEC signing on zone"
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/dns/solidserver/write"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: dnssec_enable_sign_zone
+          params:
+            dnszone_name: "{{ dnszone_name }}"
+            dns_name: "{{ dns_server_name }}"
+            zsk_encryption_type: "{{ dnssec_zsk_algorithm | default('rsasha256') }}"
+            ksk_encryption_type: "{{ dnssec_ksk_algorithm | default('rsasha256') }}"
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: dnssec_result
+      when: dns_enable_dnssec | bool
+
+    - name: "7.1 Report DNSSEC signing result"
+      ansible.builtin.debug:
+        msg: "DNSSEC signing for '{{ dnszone_name }}': {{ dnssec_result.json }}"
+      when: dns_enable_dnssec | bool
+
+    # 8. Post-verification: count records now active in the zone.
+    - name: "8. Post-verification: count DNS records in zone"
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/dns/solidserver/read"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: dns_rr_count
+          params:
+            WHERE: "dnszone_name='{{ dnszone_name }}'"
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: rr_count_result
+
+    # 9. Post-verification: display a summary of everything this run did.
+    - name: "9. Display zone provisioning summary"
+      ansible.builtin.debug:
+        msg:
+          - "Server: {{ dns_server_name }}"
+          - "View: {{ dnsview_name }} -> {{ view_result.json.status }}"
+          - "Zone: {{ dnszone_name }} ({{ dnszone_type }}) -> {{ zone_result.json.status }}"
+          - "TSIG key: {{ dns_tsig_key_name | default('not requested') }}"
+          - "Records added: {{ dns_records | length }}"
+          - "Records now in zone: {{ rr_count_result.json.result }}"
+          - "DNSSEC: {{ 'signed' if (dns_enable_dnssec | bool) else 'not requested' }}"

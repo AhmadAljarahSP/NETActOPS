@@ -1,0 +1,10 @@
+---
+requires_ansible: ">=2.16"
+
+action_groups:
+  ipam:
+    - ipam_read
+    - ipam_write
+  dns:
+    - dns_read
+    - dns_write

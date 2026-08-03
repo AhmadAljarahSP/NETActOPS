@@ -1,0 +1,71 @@
+#1. Pre-Check & CLI Preferences
+modify cli preference pager disabled   
+#modify cli preference pager enabled  
+#3. DNS Cache & Resolver
+# Record counts
+show ltm dns cache records rrset cache dns_resolver_cache count-only
+show ltm dns cache records rrset cache dns_resolver_cache type AAAA count-only
+show ltm dns cache records msg cache dns_resolver_cache count-only
+
+# Resolver stats
+show ltm dns cache resolver dns_resolver_cache
+#reset-stats ltm dns cache resolver dns_resolver_cache
+
+# DNS profile stats
+show ltm profile dns resolver_cache_dns_profile
+#reset-stats ltm profile dns resolver_cache_dns_profile
+
+# Resolver listing
+show ltm dns cache resolver
+show ltm dns cache resolver Resolver_Cache
+#4. LTM Objects & Traffic
+list ltm virtual
+show ltm virtual
+show ltm virtual /*/* | grep "Ltm::Virtual\|Availability\|Current Connections"
+show ltm virtual-address 203.0.113.10
+show ltm virtual-address 203.0.113.11
+show ltm persistence persist-records
+#5. Network Configuration
+list net interface
+list net ospf
+list net route
+list net route-domain
+list net self
+show net interface
+show net arp
+show net ospf neighbor
+show net ospf route
+show net route
+show net route 0.0.0.0
+#6. System & Hardware Health
+df -h                       # Disk usage
+show /sys hardware
+show sys hardware           # PSU status
+show sys raid               # RAID status
+show sys disk               # Disk info
+show sys cpu
+show sys memory
+show sys availability
+show sys service
+show sys version
+show sys license
+show sys performance
+show sys proc-info
+show sys provision
+#7. HA & Cluster
+show cm failover-status     # HA/Failover status
+show cm sync-status         # Config sync status
+show cm traffic-group       # Traffic-group mapping
+show sys ha-mirror          # Connection mirror
+show sys ha-status          # VS HA status
+show sys cluster            # Guest slot status
+#8. Traffic & Connection Stats
+show sys traffic
+show sys tmm-traffic
+show sys pva-traffic
+show sys connection
+show sys icmp-stat
+show sys ip-address
+show sys ip-stat
+#9. Logs & MCP
+show sys log messages

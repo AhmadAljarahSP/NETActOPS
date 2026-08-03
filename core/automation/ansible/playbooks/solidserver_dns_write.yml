@@ -1,0 +1,86 @@
+---
+# solidserver_dns_write.yml — generic DNS write action pass-through to
+# NETAct_backend's POST /dns/solidserver/write, for an EfficientIP
+# SOLIDserver appliance's DNS services. Ansible never talks to the
+# appliance directly, same as every other playbook here — see
+# core/backend/dns_solidserver.py for the allowlisted method names this
+# can actually call and the SOLIDSERVER_HOST/USER/PASSWORD env vars
+# backend needs configured before this will do anything but 503.
+#
+# WRITE ACTION. sds_method must be one of: dns_view_add, dns_view_delete,
+# dns_view_param_add, dns_view_param_delete, dns_zone_add, dns_zone_delete,
+# dns_zone_param_add, dns_zone_param_delete, dns_rr_add, dns_rr_delete,
+# dns_acl_add, dns_acl_delete, dns_key_add, dns_key_delete,
+# dnssec_enable_sign_zone — backend rejects anything else with 400
+# regardless of what this playbook sends.
+#
+# Per EfficientIP's official "SOLIDserver API: REST Reference Guide"
+# (version 7.3, revision #100648): creation AND update are the SAME
+# service for every object type here (*_add) — distinguished by HTTP verb
+# (POST=create, PUT=edit, Table 2.1), not by a separate service name. Set
+# sds_edit=true to issue PUT instead of POST. GET /dns/solidserver/methods
+# on backend returns each method's exact required params live, straight
+# from this same reference.
+#
+# sds_params is required here (unlike the read flow) — every write method
+# needs at least its identifying/target params to mean anything, so an
+# empty-params write is refused up front rather than sent and left to
+# fail confusingly on the appliance side.
+#
+# NOTE on "hosts: all" — see solidserver_dns_read.yml's note; same
+# reasoning applies here.
+#
+# Usage:
+#   ansible-playbook playbooks/solidserver_dns_write.yml -l cisco_iosxr \
+#     -e sds_method=dns_zone_add \
+#     -e sds_params="{\"dnszone_name\": \"example.com\", \"dnszone_type\": \"master\", \"dnsview_name\": \"default\", \"dns_name\": \"ns1.example.com\", \"add_flag\": \"new_only\"}"
+#
+#   ansible-playbook playbooks/solidserver_dns_write.yml -l cisco_iosxr \
+#     -e sds_method=dns_rr_add \
+#     -e sds_params="{\"dnszone_name\": \"example.com\", \"rr_name\": \"www.example.com\", \"rr_type\": \"A\", \"value1\": \"10.1.1.50\", \"dns_name\": \"ns1.example.com\"}"
+
+- name: Validate required variables before writing
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    netact_playbook_mode: write
+  tasks:
+    - name: Assert DNS write parameters were provided
+      ansible.builtin.assert:
+        that:
+          - sds_method is defined
+          - sds_params is defined
+        fail_msg: >-
+          Required vars missing. Pass -e sds_method=<dns_view_add|dns_view_delete|
+          dns_view_param_add|dns_view_param_delete|dns_zone_add|dns_zone_delete|
+          dns_zone_param_add|dns_zone_param_delete|dns_rr_add|dns_rr_delete|
+          dns_acl_add|dns_acl_delete|dns_key_add|dns_key_delete|
+          dnssec_enable_sign_zone> -e sds_params='{"key":"value",...}'
+          [-e sds_edit=true] — refusing to send a write action with no
+          target parameters rather than guessing. See
+          GET /dns/solidserver/methods on backend for each method's
+          required params.
+
+- name: Apply SOLIDserver DNS write action via backend gateway
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: POST write action to backend SOLIDserver DNS gateway
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/dns/solidserver/write"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: "{{ sds_method }}"
+          params: "{{ sds_params | from_json }}"
+          edit: "{{ sds_edit | default(false) }}"
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: sds_result
+
+    - name: Report outcome
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ sds_result.json }}"

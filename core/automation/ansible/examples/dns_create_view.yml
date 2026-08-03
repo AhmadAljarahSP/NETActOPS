@@ -1,0 +1,36 @@
+---
+# Example: create (or edit) a DNS view using the netact.solidserver
+# collection's native module syntax, instead of a raw ansible.builtin.uri
+# task. Functionally identical to solidserver_dns_write.yml with
+# sds_method=dns_view_add — this is the "how would I write my own
+# playbook using the collection" version.
+#
+# Run with: ansible-playbook examples/dns_create_view.yml \
+#   -e dns_server_name=ns1.example.com -e dnsview_name=internal
+
+- name: Create a DNS view
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Assert required vars
+      ansible.builtin.assert:
+        that:
+          - dns_server_name is defined
+          - dnsview_name is defined
+        fail_msg: "Pass -e dns_server_name=<fqdn> -e dnsview_name=<name>"
+
+    - name: Add or edit the view (idempotent — new_edit creates or updates)
+      netact.solidserver.dns_write:
+        backend_url: "{{ netact_backend_url }}"
+        api_key: "{{ netact_app_password }}"
+        method: dns_view_add
+        params:
+          dnsview_name: "{{ dnsview_name }}"
+          dns_name: "{{ dns_server_name }}"
+          add_flag: new_edit
+      register: result
+
+    - name: Show the result
+      ansible.builtin.debug:
+        var: result.result

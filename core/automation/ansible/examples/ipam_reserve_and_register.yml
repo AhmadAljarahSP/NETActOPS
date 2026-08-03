@@ -1,0 +1,59 @@
+---
+# Example: reserve an IP address in IPAM, then register a matching DNS A
+# record for it — showing the ipam_write and dns_write modules used
+# together in one playbook, since a real "provision a host" workflow
+# usually needs both.
+#
+# Run with: ansible-playbook examples/ipam_reserve_and_register.yml \
+#   -e ipam_site_name=Default -e ipam_hostaddr=10.1.1.60 \
+#   -e ipam_host_name=new-host -e dns_server_name=ns1.example.com \
+#   -e dnszone_name=example.com
+
+- name: Reserve an IP address and register its DNS record
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Assert required vars
+      ansible.builtin.assert:
+        that:
+          - ipam_site_name is defined
+          - ipam_hostaddr is defined
+          - ipam_host_name is defined
+          - dns_server_name is defined
+          - dnszone_name is defined
+        fail_msg: >-
+          Pass -e ipam_site_name=<space> -e ipam_hostaddr=<ip>
+          -e ipam_host_name=<name> -e dns_server_name=<fqdn>
+          -e dnszone_name=<zone>
+
+    - name: Reserve the IP address in IPAM
+      netact.solidserver.ipam_write:
+        backend_url: "{{ netact_backend_url }}"
+        api_key: "{{ netact_app_password }}"
+        method: ip_add
+        params:
+          site_name: "{{ ipam_site_name }}"
+          hostaddr: "{{ ipam_hostaddr }}"
+          name: "{{ ipam_host_name }}"
+      register: ip_result
+
+    - name: Register the matching A record in DNS
+      netact.solidserver.dns_write:
+        backend_url: "{{ netact_backend_url }}"
+        api_key: "{{ netact_app_password }}"
+        method: dns_rr_add
+        params:
+          dnszone_name: "{{ dnszone_name }}"
+          dns_name: "{{ dns_server_name }}"
+          rr_name: "{{ ipam_host_name }}.{{ dnszone_name }}"
+          rr_type: A
+          value1: "{{ ipam_hostaddr }}"
+          add_flag: new_edit
+      register: rr_result
+
+    - name: Show what was provisioned
+      ansible.builtin.debug:
+        msg:
+          - "IPAM: {{ ipam_hostaddr }} ({{ ipam_host_name }}) -> {{ ip_result.result }}"
+          - "DNS: {{ ipam_host_name }}.{{ dnszone_name }} A {{ ipam_hostaddr }} -> {{ rr_result.result }}"

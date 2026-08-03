@@ -1,0 +1,116 @@
+###############################################################################
+# NETAct — Compose 4: Knowledge Stack
+#
+# Requires core + topology stacks running first.
+#
+# Start:          docker compose -f docker-compose.knowledge.yml up -d --build
+# Stop:           docker compose -f docker-compose.knowledge.yml down
+# Run brain once: docker compose -f docker-compose.knowledge.yml run --rm netact-brain python importer.py
+# Graphify:       docker compose -f docker-compose.knowledge.yml --profile manual run --rm graphify-update
+#                 docker compose -f docker-compose.knowledge.yml --profile manual run --rm graphify-cluster
+###############################################################################
+
+name: netact
+
+services:
+
+  netact-brain:
+    build:
+      context: ./knowledge/brain_importer
+    container_name: NETAct_brain
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      TOPOLOGY_API: "http://NETAct_topology_backend:8001"
+      BACKEND_API: "http://NETAct_backend:8000"
+      AUTOMATION_API: "http://NETAct_Automation:8003"
+      COPILOT_API: "http://NETAct_copilot_backend:8002"
+      OLLAMA_API: "http://NETAct_ollama_exporter:11435"
+      OLLAMA_MODEL: "llama3.2"
+      OLLAMA_NUM_THREAD: "16"
+      GIT_REPO_PATH: /git/repo
+      VAULT_PATH: /app/obsidian_topology
+      DEVICES_YAML_PATH: /backend/devices
+      # Pure event-driven — no periodic timer. Imports run on startup and
+      # whenever a data-changing action calls POST /api/brain/import.
+      METRICS_PORT: "9092"
+    ports:
+      - "127.0.0.1:9092:9092"
+    volumes:
+      - git-repo:/git/repo:ro
+      - ./core/backend:/backend:ro
+      - ./knowledge/obsidian_topology:/app/obsidian_topology:rw
+    command: ["python", "importer.py", "--loop"]
+    networks:
+      - config-net
+
+  obsidian-web:
+    image: lscr.io/linuxserver/obsidian:latest
+    container_name: NETAct_obsidian_web
+    restart: unless-stopped
+    env_file: .env
+    security_opt:
+      - seccomp:unconfined
+    shm_size: "1gb"
+    volumes:
+      - ./knowledge/obsidian_config:/config
+      - ./knowledge/obsidian_topology:/config/obsidian_topology:rw
+    ports:
+      - "127.0.0.1:8085:3000"
+    networks:
+      - config-net
+
+  # ── Graphify Update (manual) ─────────────────────────────────────────────────
+  # Parses [[wikilinks]] from vault markdown — NO LLM required, runs in seconds.
+  # Replaces the old LLM-heavy "extract" approach.
+  # Run: docker compose -f docker-compose.knowledge.yml --profile manual run --rm graphify-update
+  graphify-update:
+    build:
+      context: ./ai/backend
+    container_name: NETAct_graphify_update
+    user: root
+    entrypoint:
+      - python
+      - -m
+      - graphify
+      - update
+      - /app/obsidian_topology
+      - --force
+    profiles:
+      - manual
+    volumes:
+      - ./knowledge/obsidian_topology:/app/obsidian_topology:rw
+    networks:
+      - config-net
+
+  # ── Graphify Cluster (manual) ────────────────────────────────────────────────
+  # Rerun community clustering on existing graph.json — no LLM (--no-label).
+  # Run after graphify-update if you want fresh community groupings.
+  # Run: docker compose -f docker-compose.knowledge.yml --profile manual run --rm graphify-cluster
+  graphify-cluster:
+    build:
+      context: ./ai/backend
+    container_name: NETAct_graphify_cluster
+    entrypoint:
+      - python
+      - -m
+      - graphify
+      - cluster-only
+      - /app/obsidian_topology
+      - --no-label
+    profiles:
+      - manual
+    volumes:
+      - ./knowledge/obsidian_topology:/app/obsidian_topology:rw
+    networks:
+      - config-net
+
+volumes:
+  git-repo:
+    external: true
+    name: netact_git-repo
+
+networks:
+  config-net:
+    external: true
+    name: netact_config-net

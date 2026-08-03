@@ -1,0 +1,63 @@
+###############################################################################
+# NETAct — Compose 3: Topology Stack
+#
+# Requires core stack running first.
+#
+# Start:  docker compose -f docker-compose.topology.yml up -d --build
+# Stop:   docker compose -f docker-compose.topology.yml down
+###############################################################################
+
+name: netact
+
+services:
+
+  topology-backend:
+    build:
+      context: ./topology/backend
+    container_name: NETAct_topology_backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      GIT_REPO_PATH: /git/repo
+    volumes:
+      - git-repo:/git/repo
+      - topology-data:/app/data
+      - ./core/backend/devices:/app/devices:ro
+      - ./topology/backend/app.py:/app/app.py:ro
+    ports:
+      - "127.0.0.1:8001:8001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - config-net
+
+  topology-frontend:
+    build:
+      context: ./topology/frontend
+    container_name: NETAct_topology_frontend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NGINX_ENVSUBST_FILTER: APP_PASSWORD
+#    volumes:
+#      - ./topology/frontend/dist:/usr/share/nginx/html:ro
+    ports:
+      - "127.0.0.1:3001:80"
+    depends_on:
+      - topology-backend
+    networks:
+      - config-net
+
+volumes:
+  topology-data:
+  git-repo:
+    external: true
+    name: netact_git-repo
+
+networks:
+  config-net:
+    external: true
+    name: netact_config-net

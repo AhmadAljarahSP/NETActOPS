@@ -1,0 +1,20 @@
+[project]
+name = "netact-cli"
+version = "1.0.0"
+description = "Unified operator CLI for the NETAct platform"
+requires-python = ">=3.9"
+dependencies = [
+    "typer>=0.12",
+    "httpx>=0.27",
+    "rich>=13",
+]
+
+[project.scripts]
+netact = "netact_cli.main:app"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["netact_cli*"]

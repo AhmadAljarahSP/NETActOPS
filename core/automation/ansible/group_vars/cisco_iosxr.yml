@@ -1,0 +1,5 @@
+# Cisco IOS-XR — the primary Cisco platform in NETAct's inventory
+# (demo-router-01/02, demo-gw-01, etc.). No connection settings
+# needed here — see group_vars/all.yml. netact_vendor_label is used by
+# playbooks to pick the right show-command/config-template branch.
+netact_vendor_label: cisco_iosxr

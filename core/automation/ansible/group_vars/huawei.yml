@@ -1,0 +1,6 @@
+# Huawei VRP (NE9000 and other Huawei-vendor devices). Reached via
+# backend's CLI-based push_config_to_device / collect_from_device (the
+# same jump-host SSH session mechanism as every other vendor here) — NOT
+# NETCONF. Backend enters "system-view" for Huawei automatically based on
+# the device's vendor field, so playbooks just send real VRP CLI lines.
+netact_vendor_label: huawei

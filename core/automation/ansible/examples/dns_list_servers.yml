@@ -1,0 +1,38 @@
+---
+# Template: collect dns_server_list from a specific SOLIDserver appliance.
+#
+# IMPORTANT — backend architecture note: the SOLIDserver connection
+# (host/user/password) is configured ONCE, server-side, as env vars on
+# NETAct_backend (SOLIDSERVER_HOST/SOLIDSERVER_USER/SOLIDSERVER_PASSWORD —
+# see core/backend/solidserver_client.py). Neither this playbook nor the
+# matching "DNS - List Servers" visual flow template can target a
+# different appliance per-call; backend always talks to whichever one
+# it's currently configured for. This template assumes (placeholder
+# values, NOT currently set):
+#
+#   SOLIDSERVER_HOST=192.168.1.1
+#   SOLIDSERVER_USER=admin
+#   SOLIDSERVER_PASSWORD=admin
+#
+# To make this actually reach that appliance: set those three env vars on
+# NETAct_backend (e.g. in docker-compose.core.yml's backend service, or
+# an .env file it loads) and restart the backend container. Until then,
+# every call below returns 503 "SOLIDserver integration not configured".
+#
+# Run with: ansible-playbook examples/dns_list_servers.yml
+
+- name: Collect dns_server_list from the configured SOLIDserver appliance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: List DNS servers
+      netact.solidserver.dns_read:
+        backend_url: "{{ netact_backend_url }}"
+        api_key: "{{ netact_app_password }}"
+        method: dns_server_list
+      register: result
+
+    - name: Show the servers found
+      ansible.builtin.debug:
+        var: result.result

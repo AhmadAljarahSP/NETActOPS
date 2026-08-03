@@ -1,0 +1,119 @@
+---
+# healthcheck_facts.yml — operational status (interfaces, BGP/OSPF
+# neighbor state) via NETAct_backend's sanitized diagnostic gateway.
+#
+# Usage:
+#   ansible-playbook playbooks/healthcheck_facts.yml -l cisco_iosxr
+#
+# Read-only, same backend-only access pattern as gather_facts.yml. Uses
+# each vendor's real show/display command prefix per CLAUDE.md rule 3.
+
+- name: Healthcheck — Cisco IOS-XR
+  hosts: cisco_iosxr
+  gather_facts: false
+  vars:
+    netact_playbook_mode: read_only
+  tasks:
+    - name: Interface brief, BGP summary, OSPF neighbors
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/run-command"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          command: "{{ item }}"
+        status_code: [200, 400]
+      loop:
+        - "show ipv4 interface brief"
+        - "show bgp summary"
+        - "show ospf neighbor"
+      register: iosxr_health
+
+    - name: Display results
+      ansible.builtin.debug:
+        msg: "{{ item.item }}: {{ item.json.output | default(item.json.detail) }}"
+      loop: "{{ iosxr_health.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+- name: Healthcheck — generic Cisco IOS/IOS-XE
+  hosts: cisco_ios
+  gather_facts: false
+  tasks:
+    - name: Interface brief, BGP summary, OSPF neighbors
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/run-command"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          command: "{{ item }}"
+        status_code: [200, 400]
+      loop:
+        - "show ip interface brief"
+        - "show ip bgp summary"
+        - "show ip ospf neighbor"
+      register: ios_health
+
+    - name: Display results
+      ansible.builtin.debug:
+        msg: "{{ item.item }}: {{ item.json.output | default(item.json.detail) }}"
+      loop: "{{ ios_health.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+- name: Healthcheck — Juniper Junos
+  hosts: junos
+  gather_facts: false
+  tasks:
+    - name: Interface terse, BGP summary, OSPF neighbor
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/run-command"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          command: "{{ item }}"
+        status_code: [200, 400]
+      loop:
+        - "show interfaces terse"
+        - "show bgp summary"
+        - "show ospf neighbor"
+      register: junos_health
+
+    - name: Display results
+      ansible.builtin.debug:
+        msg: "{{ item.item }}: {{ item.json.output | default(item.json.detail) }}"
+      loop: "{{ junos_health.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+- name: Healthcheck — Huawei VRP
+  hosts: huawei
+  gather_facts: false
+  tasks:
+    - name: Interface brief, BGP peer, OSPF peer
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/run-command"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          command: "{{ item }}"
+        status_code: [200, 400]
+      loop:
+        - "display ip interface brief"
+        - "display bgp peer"
+        - "display ospf peer"
+      register: huawei_health
+
+    - name: Display results
+      ansible.builtin.debug:
+        msg: "{{ item.item }}: {{ item.json.output | default(item.json.detail) }}"
+      loop: "{{ huawei_health.results }}"
+      loop_control:
+        label: "{{ item.item }}"

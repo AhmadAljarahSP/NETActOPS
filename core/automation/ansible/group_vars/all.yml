@@ -1,0 +1,14 @@
+# Common variables for every NETAct-managed host.
+#
+# No connection details and no credentials here — Ansible never connects
+# to a device directly. Every task in every playbook calls back into
+# NETAct_backend's sanitized gateway (POST /devices/{id}/run-command for
+# read-only diagnostics, POST /devices/{id}/push-config for write actions)
+# via ansible.builtin.uri with connection: local. Backend already holds
+# DEVICE_USER/DEVICE_PASS and owns the actual SSH/jump-host session — this
+# Ansible layer only ever needs to know *which* device (netact_device_id,
+# supplied per-host by inventory/dynamic_inventory.py) and *what* to ask
+# backend to do.
+ansible_connection: local
+netact_backend_url: "{{ lookup('env', 'NETACT_BACKEND_URL') | default('http://backend:8000', true) }}"
+netact_app_password: "{{ lookup('env', 'APP_PASSWORD') }}"

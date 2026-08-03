@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+asyncssh
+gitpython
+pyyaml
+cryptography
+httpx
+python-multipart

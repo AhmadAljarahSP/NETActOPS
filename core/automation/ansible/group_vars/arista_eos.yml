@@ -1,0 +1,3 @@
+# Arista EOS — not currently present in NETAct's inventory. CLI-based,
+# same mechanism as the other vendors once a host exists in this group.
+netact_vendor_label: arista_eos

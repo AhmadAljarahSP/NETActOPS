@@ -1,0 +1,16 @@
+FROM python:3.10-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    openssh-client \
+    sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies
+RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org --trusted-host pypi.python.org \
+    fastapi uvicorn pandas openpyxl python-multipart
+
+WORKDIR /git/repo
+
+EXPOSE 8002

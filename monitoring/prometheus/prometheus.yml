@@ -1,0 +1,33 @@
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: 'netact-backend'
+    metrics_path: '/api/metrics'
+    static_configs:
+      - targets: ['NETAct_backend:8000']
+
+  - job_name: 'copilot-backend'
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['NETAct_copilot_backend:8002']
+        labels:
+          instance: 'copilot'
+
+  - job_name: 'ollama'
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['NETAct_ollama_exporter:9110']
+        labels:
+          instance: 'ollama-local'
+
+  - job_name: 'netact-brain'
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['NETAct_brain:9092']
+        labels:
+          instance: 'brain-importer'

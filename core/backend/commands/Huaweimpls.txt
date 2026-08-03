@@ -1,0 +1,90 @@
+display current-configuration
+display clock
+display alarm all 
+display device
+display device pic-status 
+display power
+display health
+display interface brief
+display interface brief main | include up
+display startup
+display license
+display vrrp brief
+display bfd session all
+display ospf peer brief
+display ospfv3 peer
+display bgp peer | include Established
+display bgp ipv6 peer | include Established
+display bgp vpnv4 all peer | include Established
+display bgp vpnv6 all peer | include Established
+display bgp peer
+display bgp ipv6 peer 
+display bgp vpnv4 all peer 
+display bgp vpnv6 all peer
+display ip routing-table statistics 
+display ip routing-table all-vpn-instance statistics 
+display ipv6 routing-table statistics
+display bgp routing-table statistics
+display bgp ipv6 routing-table statistics
+display current-configuration
+display mac-address
+display lldp neighbor brief
+display bgp vpnv4 all routing-table statistics
+display bgp vpnv6 all routing-table statistics
+display ipv6 routing-table all-vpn-instance statistics 
+display fib statistics all
+display ip vpn-instance
+display ip vpn-instance verbose
+display interface description
+display interface description | include up
+display pim neighbor 
+display mpls l2vc
+display mpls l2vc state up
+display mpls l2vc state down
+display mpls l2vc brief 
+display mpls ldp interface
+display mpls ldp peer
+display vsi
+display vsi verbose 
+display vsi pw out-interface 
+display vsi services all
+display vsi peer-info
+display mpls ldp session all
+display stp brief
+display version
+display patch
+display Ip interface brief
+dir cfcard:       
+dir cfcard2:      
+dir slave#cfcard: 
+dir slave#cfcard2:
+display sa-node link local-configuration
+display esn
+display arp all
+display interface
+display paf all
+display alarm active
+display alarm history
+display trapbuffer
+display logbuffer
+display ptp all
+display domain
+display access-user online-total-number
+
+
+display stp brief
+display elabel
+y
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+display current-configuration configuration ospf
+display current-configuration configuration bgp

@@ -1,0 +1,74 @@
+---
+# solidserver_ipam_read.yml — generic read-only IPAM query pass-through to
+# NETAct_backend's POST /ipam/solidserver/read, for an EfficientIP
+# SOLIDserver DDI/IPAM appliance. Ansible never talks to the appliance
+# directly, same as every other playbook here — see
+# core/backend/ipam_solidserver.py for the allowlisted method names this
+# can actually call and the SOLIDSERVER_HOST/USER/PASSWORD env vars backend
+# needs configured before this will do anything but 503.
+#
+# READ-ONLY. sds_method must be one of: ip_site_list, ip_site_info,
+# ip_block_subnet_list, ip_block_subnet_info, ip_find_free_subnet,
+# ip_address_list, ip_address_info, ip_find_free_address — backend rejects
+# anything else with 400 regardless of what this playbook sends. Method
+# names and required sds_params keys are verified against EfficientIP's
+# official "SOLIDserver API: REST Reference Guide" (version 7.3, revision
+# #100648) — GET /ipam/solidserver/methods on backend returns the same
+# reference data live, so it never needs to be re-derived from the PDF.
+#
+# NOTE on "hosts: all": this queries one appliance, not per-device state —
+# the play below only targets real inventory hosts so this flow satisfies
+# the visual designer's requirement that a node have at least one targeted
+# device selected; the IPAM call itself is identical no matter which
+# device triggered it (and runs once per selected device — select just one
+# when using this flow from the visual designer to avoid redundant calls).
+# When run directly via ansible-playbook, any inventory group works, e.g.
+# -l cisco_iosxr.
+#
+# Usage:
+#   ansible-playbook playbooks/solidserver_ipam_read.yml -l cisco_iosxr \
+#     -e sds_method=ip_address_list -e sds_params="{\"WHERE\": \"site_name='Default'\"}"
+#
+#   ansible-playbook playbooks/solidserver_ipam_read.yml -l cisco_iosxr \
+#     -e sds_method=ip_find_free_subnet -e sds_params='{"site_id":"3","prefix":"29"}'
+
+- name: Validate required variables before querying
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    netact_playbook_mode: read_only
+  tasks:
+    - name: Assert an IPAM method was provided
+      ansible.builtin.assert:
+        that:
+          - sds_method is defined
+        fail_msg: >-
+          Required var missing. Pass -e sds_method=<ip_site_list|ip_site_info|
+          ip_block_subnet_list|ip_block_subnet_info|ip_find_free_subnet|
+          ip_address_list|ip_address_info|ip_find_free_address>
+          [-e sds_params='{"key":"value"}'] — refusing to guess which IPAM
+          query to run. See GET /ipam/solidserver/methods on backend for
+          each method's required params.
+
+- name: Query SOLIDserver IPAM via backend gateway
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: POST read query to backend SOLIDserver gateway
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/ipam/solidserver/read"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          method: "{{ sds_method }}"
+          params: "{{ (sds_params | default('{}')) | from_json }}"
+        status_code: [200, 400, 503]
+        timeout: 60
+      register: sds_result
+
+    - name: Report outcome
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ sds_result.json }}"

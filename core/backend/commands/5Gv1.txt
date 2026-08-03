@@ -1,0 +1,52 @@
+terminal length 0
+show platform
+show install active summary
+show logging
+show cdp neigh
+admin show inventory
+show hw-module location all fpd
+admin show diag chassis
+show running-config
+show ptp interfaces
+show ptp platform servo
+show im database brief interface tenGigE 0/0/0/0
+show im database brief interface tenGigE 0/1/0/0
+show controller timing sync-agent trace all location 0/0/CPU0
+show controller timing sync-agent trace all location 0/1/CPU0
+show controller timing driver trace all location 0/RP0/CPU0
+show controller timing driver trace all location 0/RP1/CPU0
+show ptp platform trace location 0/RP0/CPU0
+show ptp platform trace location 0/RP1/CPU0
+show platform
+show install active summary
+show logging
+admin show inventory
+show hw-module location all fpd
+admin show diag chassis
+show running-config
+show ptp interfaces
+show ptp platform servo    ? run this at least three times
+show im database brief interface <INTERFACE>
+show controller timing sync-agent trace all location <LC>
+show controller timing driver trace all location <RP>
+show ptp platform trace location <RP>
+show controllers timing sync-agent trace all location 0/0/cpu0
+show controllers timing sync-agent trace all location 0/1/cpu0
+show controllers timing driver trace all location 0/rp0/cpu0
+show controllers timing driver trace all location 0/rp1/cpu0
+show ptp platform trace location 0/rp0/cpu0
+show ptp platform trace location 0/rp1/cpu0
+show controllers timing sync-agent trace all location 0/1/cpu0
+show controllers timing sync-agent trace all location 0/0/cpu0
+show controllers timing input-clock status location 0/rp0/cpu0
+show controllers timing input-clock status location 0/rp1/cpu0
+show controllers timing pll status location 0/rp0/cpu0
+show controllers timing pll status location 0/rp1/cpu0
+show controllers timing pll status location 0/rp0/cpu0
+show controllers timing pll status location 0/rp1/cpu0
+show processes blocked location all
+show frequency synchronization inter
+show frequency synchronization interfaces
+show frequency synchronization summary
+show ptp platf servo
+# verified by antigravity

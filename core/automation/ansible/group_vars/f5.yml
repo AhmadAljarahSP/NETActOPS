@@ -1,0 +1,11 @@
+# F5 BIG-IP — REST/iControl-based, not currently present in NETAct's
+# inventory. IMPORTANT HONEST NOTE: backend's new sanitized gateway
+# (collect_from_device / push_config_to_device, see core/backend/collector.py)
+# is a CLI-over-SSH mechanism only — it does not speak REST. Routing F5
+# through "Automation only accesses network elements via NETAct_backend"
+# therefore requires backend to grow REST/iControl support first; that's
+# real, separate future work, not something faked here. No F5 tasks exist
+# in playbooks/ yet as a result — this group_vars file exists for when
+# that backend work happens and an F5 host is added to inventory.
+netact_vendor_label: f5
+netact_reachable_via_backend: false

@@ -1,0 +1,13 @@
+{
+  "rules": {
+    "mask_ips": true,
+    "mask_hostnames": true,
+    "mask_commands": true,
+    "mask_emails": true
+  },
+  "custom_terms": [
+    "password",
+    "username"
+  ],
+  "custom_regexes": []
+}

@@ -1,0 +1,77 @@
+---
+# gather_facts.yml — vendor-aware "show version" style facts, via
+# NETAct_backend's sanitized diagnostic gateway.
+#
+# Usage:
+#   ansible-playbook playbooks/gather_facts.yml -l cisco_iosxr
+#
+# Read-only. Every task runs locally (see group_vars/all.yml) and calls
+# POST /devices/{netact_device_id}/run-command on backend — Ansible never
+# opens a connection to the device itself. Backend enforces the
+# read-only-command safety check before anything reaches the device.
+
+- name: Gather version/facts — Cisco IOS-XR and generic Cisco IOS
+  hosts: cisco_iosxr:cisco_ios
+  gather_facts: false
+  vars:
+    # Declared and content-verified at upload time (POST /ansible/flows/upload
+    # rejects a read_only claim if the file references push-config anywhere) —
+    # this is what lets the frontend's Pre/PostCheck "Check Mode" dropdown
+    # trust this flow is safe to offer as a check step.
+    netact_playbook_mode: read_only
+  tasks:
+    - name: Request 'show version' via backend
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/run-command"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          command: "show version"
+        status_code: [200, 400]
+      register: facts_result
+
+    - name: Show result
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ facts_result.json.output | default(facts_result.json.detail) }}"
+
+- name: Gather version/facts — Juniper Junos
+  hosts: junos
+  gather_facts: false
+  tasks:
+    - name: Request 'show version' via backend
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/run-command"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          command: "show version"
+        status_code: [200, 400]
+      register: facts_result
+
+    - name: Show result
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ facts_result.json.output | default(facts_result.json.detail) }}"
+
+- name: Gather version/facts — Huawei VRP
+  hosts: huawei
+  gather_facts: false
+  tasks:
+    - name: Request 'display version' via backend
+      ansible.builtin.uri:
+        url: "{{ netact_backend_url }}/devices/{{ netact_device_id }}/run-command"
+        method: POST
+        headers:
+          X-Api-Key: "{{ netact_app_password }}"
+        body_format: json
+        body:
+          command: "display version"
+        status_code: [200, 400]
+      register: facts_result
+
+    - name: Show result
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ facts_result.json.output | default(facts_result.json.detail) }}"

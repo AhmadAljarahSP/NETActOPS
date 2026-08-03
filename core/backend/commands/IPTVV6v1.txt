@@ -1,0 +1,43 @@
+display version
+display license
+display current-configuration
+display lldp neighbor brief
+display interface
+display interface brief
+display interface description
+display ip int brief
+display vlan
+display stp brief
+display stp
+display mac-address
+display arp
+display arp all
+display ip routing-table
+display ip routing-table statistics
+display ip routing-table  all statistics
+display pim neighbor
+display pim routing-table
+display pim routing-table brief
+display pim rp-info
+display pim interface
+display pim control-message counters message-type join-prune
+display pim mib-control-message counters
+display igmp-snooping configuration
+display igmp-snooping router-port vlan
+display igmp-snooping
+display igmp-snooping statistics vlan
+display igmp-snooping querier vlan
+display igmp-snooping port-info
+display igmp-snooping group
+display igmp-snooping group brief
+display igmp-snooping port-info
+display multicast routing-table
+display multicast forwarding-table statistics
+display multicast forwarding-table verbose
+display igmp interface
+display igmp group verbose
+display igmp invalid-packet
+display igmp invalid-packet verbose
+display cpu-usage
+display cpu-usage slave
+display cpu-usage history 1hour
