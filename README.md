@@ -1,6 +1,6 @@
 # NETAct: Second-Brain AI, Local ollama&Gemini Escalation  Multi-Vendor Network Configuration Management, Automation & AI Copilot Platform 
 
-NETAct is an ISP network automation (MCP & Ansible), configuration management, topology graphing & analysis, network monitoring, security analysis, and AI copilot platform. It provides seamless configuration backup, automated compliance checks, live topology graphing, and an intelligent chat assistant for multi-vendor environments (Cisco IOS/XR, Huawei, Juniper, Arista, and F5).
+NETAct is an ISP network automation (MCP & Ansible), configuration management, topology graphing & analysis, network monitoring, security analysis, and AI copilot platform. It provides seamless configuration backup, automated compliance checks, live topology graphing, and an intelligent chat assistant for multi-vendor environments (supporting Cisco IOS/XE/XR, Huawei, Juniper, Arista, F5, and any vendor OS supported by the Ansible automation ecosystem).
 
 ### 🚀 Key Focus Areas & Methodologies
 `AIOps` • `NetDevOps` • `NetOps` • `DevOps` • `CCIE Level Design` • `HCIE` • `JNCIE` • `Infrastructure as Code (IaC)` • `Model Context Protocol (MCP)` • `LangGraph State Machines` • `Automated Network Configuration & Backup` • `3D Topology Graphing`
