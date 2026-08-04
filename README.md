@@ -19,7 +19,7 @@ NETAct is an ISP network automation (MCP & Ansible), configuration management, t
 7. [Setup & Quick Start](#7-setup--quick-start)
 8. [Topology Building & Device Collection Mechanics](#8-topology-building--device-collection-mechanics)
 9. [`netact` CLI Commands & Console Access](#9-netact-cli-commands--console-access)
-10. [Multi-Vendor Feature Support Matrix](#10-multi-vendor-feature-support-matrix)
+10. [Multi-Vendor Automation & Extensibility](#10-multi-vendor-automation--extensibility)
 11. [Troubleshooting & Diagnostics FAQ](#11-troubleshooting--diagnostics-faq)
 
 ---
@@ -401,21 +401,10 @@ If you need to run troubleshooting scripts or execute commands from within the D
 *   `netact ai chat`: Starts a stateful, interactive session keeping the same conversation history.
 *   `netact ai models`: Lists available Ollama models.
 
----
-
-## 10. Multi-Vendor Feature Support Matrix
-
-| Vendor OS | Command Transport | Config Backup | Config Rollback | LLDP Parsing | OSPF LSDB Neighbors | pyATS/Genie Parsing |
-|---|---|---|---|---|---|---|
-| **Cisco IOS/XE** | SSH & Telnet | Verified | Verified | Verified | Verified | Yes |
-| **Cisco NX-OS** | SSH | Verified | Verified | Verified | Verified | Yes |
-| **Huawei VRP** | SSH & Telnet | Verified | Verified | Verified | Verified | Yes (TTP Template) |
-| **Juniper Junos** | SSH | Verified | Verified | Verified | Verified | Yes (TTP Template) |
-| **Arista EOS** | SSH | Verified | Verified | Verified | Verified | Yes |
-| **F5 BIG-IP** | SSH (TMSH) | Verified | Verified | N/A | N/A | Yes |
+## 10. Multi-Vendor Automation & Extensibility
 
 > [!TIP]
-> **Extensible via Ansible & Custom Workflows**: Since the platform natively integrates with **Ansible**, it inherits support for **all command transports (SSH, Telnet, Console), APIs (NETCONF, RESTCONF, gNMI, and REST APIs)** across the entire Ansible ecosystem of network modules (including Fortinet, Palo Alto, Nokia, etc.).
+> **Extensible via Ansible & Custom Workflows**: Since the platform natively integrates with **Ansible**, it inherits support for **all command transports (SSH, Telnet, Console), APIs (NETCONF, RESTCONF, gNMI, and REST APIs)** across the entire Ansible ecosystem of network modules (including Cisco, Huawei, Juniper, Arista, F5, Fortinet, Palo Alto, Nokia, etc.).
 > 
 > You can easily define your own automation playbooks and scripts, register them in the workspace, and integrate them with the **Copilot AI** to analyze network states, draft configuration changes, and safely execute/validate multi-vendor workflows on demand.
 
