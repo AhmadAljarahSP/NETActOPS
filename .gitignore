@@ -9,7 +9,7 @@ core/automation/devices/*.yaml
 !core/backend/devices/README.md
 
 # Knowledge base — device-derived vault content and container runtime state
-knowledge/obsidian_topology/
+# knowledge/obsidian_topology/
 knowledge/obsidian_config/
 ai/backend/graphify-out/
 
