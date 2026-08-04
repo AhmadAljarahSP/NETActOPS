@@ -35,6 +35,7 @@ NETAct is built as a microservices architecture organized into **five independen
 *   **Benchmarking Suite**: A test-case framework is included to rate and log AI accuracy per device and per topic, which can easily be customized to fit your specific network topology parameters.
 
 #### Platform Benchmarking Results
+The more data you upload to the copilot knowledgebase and vectorize for Gemini responses, the higher accuracy and performance rates you achieve.
 ![Platform Benchmarking Results](assets/Benchmark.png)
 
 ### Component Relationship Diagram
