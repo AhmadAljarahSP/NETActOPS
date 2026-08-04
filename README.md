@@ -148,7 +148,7 @@ The primary interface is built as a single-page React app that integrates device
 *   **Coordinates Sync**: Dragging a node calls `POST /coords` to save the position to the backend, keeping the layout synchronized for all users.
 
 #### 3D Live Topology Motion Visualization:
-![3D Motion Topology](assets/3d_topology.gif)
+<video src="assets/3d_topology.mp4" width="100%" height="auto" autoplay loop muted></video>
 
 ### 5.2. AI Assistant Panel
 *   **Contextual Side Panel**: Stays open during configuration and troubleshooting tasks.
