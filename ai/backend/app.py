@@ -772,7 +772,20 @@ async def update_sanitization_config(config: dict):
 
 @app.get("/api/copilot/health")
 async def health():
-    return {"status": "healthy", "ollama_host": OLLAMA_HOST, "ollama_model": OLLAMA_MODEL}
+    qdrant_points = 0
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(f"{QDRANT_URL}/collections/netact_knowledgebase")
+            if resp.status_code == 200:
+                qdrant_points = resp.json().get("result", {}).get("points_count", 0)
+    except Exception as e:
+        logger.error(f"Error fetching Qdrant points count for health check: {e}")
+    return {
+        "status": "healthy",
+        "ollama_host": OLLAMA_HOST,
+        "ollama_model": OLLAMA_MODEL,
+        "qdrant_points_count": qdrant_points
+    }
 
 @app.get("/metrics")
 async def prometheus_metrics():

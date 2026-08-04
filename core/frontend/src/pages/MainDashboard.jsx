@@ -171,7 +171,9 @@ export default function MainDashboard() {
         {/* Vector Points Ingested */}
         <div style={{ ...styles.statCard, position: "relative", overflow: "hidden" }}>
           <div style={styles.statLabel}>Qdrant Vector Storage</div>
-          <div style={{ ...styles.statValue, color: colors.success }}>109,057</div>
+          <div style={{ ...styles.statValue, color: colors.success }}>
+            {health?.qdrant_points_count !== undefined ? health.qdrant_points_count.toLocaleString() : "0"}
+          </div>
           <div style={{ fontSize: 11, color: styles.subtitle.color, marginTop: 4 }}>768-dim nomic-embed-text vectors</div>
           <div style={{ position: "absolute", bottom: 0, left: 0, height: 3, width: "100%", background: colors.success }} />
         </div>
