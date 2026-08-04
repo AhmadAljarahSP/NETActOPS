@@ -414,6 +414,11 @@ If you need to run troubleshooting scripts or execute commands from within the D
 | **Arista EOS** | SSH | Verified | Verified | Verified | Verified | Yes |
 | **F5 BIG-IP** | SSH (TMSH) | Verified | Verified | N/A | N/A | Yes |
 
+> [!TIP]
+> **Extensible via Ansible & Custom Workflows**: Since the platform natively integrates with **Ansible**, it inherits support for **all command transports (SSH, Telnet, Console), APIs (NETCONF, RESTCONF, gNMI, and REST APIs)** across the entire Ansible ecosystem of network modules (including Fortinet, Palo Alto, Nokia, etc.).
+> 
+> You can easily define your own automation playbooks and scripts, register them in the workspace, and integrate them with the **Copilot AI** to analyze network states, draft configuration changes, and safely execute/validate multi-vendor workflows on demand.
+
 ---
 
 ## 11. Troubleshooting & Diagnostics FAQ
