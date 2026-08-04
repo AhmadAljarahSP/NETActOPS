@@ -59,11 +59,11 @@ set "OPENSSL_CMD=openssl"
 where openssl >nul 2>nul
 if %ERRORLEVEL% NEQ 0 (
   if exist "%PROGRAMFILES%\Git\usr\bin\openssl.exe" (
-    set "OPENSSL_CMD="%PROGRAMFILES%\Git\usr\bin\openssl.exe""
+    set "OPENSSL_CMD=%PROGRAMFILES%\Git\usr\bin\openssl.exe"
   ) else if exist "%PROGRAMFILES(x86)%\Git\usr\bin\openssl.exe" (
-    set "OPENSSL_CMD="%PROGRAMFILES(x86)%\Git\usr\bin\openssl.exe""
+    set "OPENSSL_CMD=%PROGRAMFILES(x86)%\Git\usr\bin\openssl.exe"
   ) else if exist "%USERPROFILE%\AppData\Local\Programs\Git\usr\bin\openssl.exe" (
-    set "OPENSSL_CMD="%USERPROFILE%\AppData\Local\Programs\Git\usr\bin\openssl.exe""
+    set "OPENSSL_CMD=%USERPROFILE%\AppData\Local\Programs\Git\usr\bin\openssl.exe"
   ) else (
     echo ERROR: openssl was not found on PATH or in Git directories. Generate DeepConsol\certs\server.crt manually.
     pause
@@ -72,7 +72,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 if not exist "DeepConsol\certs" mkdir "DeepConsol\certs"
-%OPENSSL_CMD% req -x509 -newkey rsa:2048 -nodes -keyout "DeepConsol\certs\server.key" -out "DeepConsol\certs\server.crt" -days 825 -subj "/CN=netact.local" -addext "subjectAltName=DNS:localhost,IP:127.0.0.1" 2>nul
+"%OPENSSL_CMD%" req -x509 -newkey rsa:2048 -nodes -keyout "DeepConsol\certs\server.key" -out "DeepConsol\certs\server.crt" -days 825 -subj "/CN=netact.local" -addext "subjectAltName=DNS:localhost,IP:127.0.0.1" 2>nul
 echo Certificate generated.
 echo.
 
