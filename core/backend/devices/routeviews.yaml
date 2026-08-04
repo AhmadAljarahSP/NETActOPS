@@ -1,0 +1,24 @@
+groups:
+  routeviews:
+    vendor: cisco
+    connection: telnet
+    username: rviews
+    password: ""
+    port: 23
+    commands_source: /app/commands/routeviews.txt
+
+devices:
+  - ip: "route-views.routeviews.org"
+    hostname: "route-views-oregon"
+    device_type: "BGP-COLLECTOR"
+    group: routeviews
+
+  - ip: "route-views3.routeviews.org"
+    hostname: "route-views-3"
+    device_type: "BGP-COLLECTOR"
+    group: routeviews
+
+  - ip: "route-views.sg.routeviews.org"
+    hostname: "route-views-singapore"
+    device_type: "BGP-COLLECTOR"
+    group: routeviews

@@ -5,6 +5,8 @@
 
 # Real device inventory — ships empty, users add their own via UI/import
 core/backend/devices/*.yaml
+!core/backend/devices/eve-ng-devices.yaml
+!core/backend/devices/routeviews.yaml
 core/automation/devices/*.yaml
 !core/backend/devices/README.md
 

@@ -1,0 +1,98 @@
+groups:
+  eve-ng:
+    vendor: cisco
+    connection: telnet
+    username: ""
+    password: ""
+    commands_source: /app/commands/eve-ng-commands.yaml
+
+devices:
+  - ip: "10.10.10.10"
+    port: 32769
+    hostname: "R1"
+    device_type: "ROUTER"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32770
+    hostname: "R2"
+    device_type: "ROUTER"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32771
+    hostname: "R3"
+    device_type: "ROUTER"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32772
+    hostname: "R4"
+    device_type: "ROUTER"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32773
+    hostname: "R5"
+    device_type: "ROUTER"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32774
+    hostname: "R6"
+    device_type: "ROUTER"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32775
+    hostname: "R7"
+    device_type: "ROUTER"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32776
+    hostname: "R8"
+    device_type: "ROUTER"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32777
+    hostname: "R9"
+    device_type: "ROUTER"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32778
+    hostname: "R10"
+    device_type: "ROUTER"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32779
+    hostname: "sw11"
+    device_type: "SWITCH"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32780
+    hostname: "sw12"
+    device_type: "SWITCH"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32781
+    hostname: "sw13"
+    device_type: "SWITCH"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32782
+    hostname: "sw14"
+    device_type: "SWITCH"
+    group: "eve-ng"
+
+  - ip: "10.10.10.10"
+    port: 32783
+    hostname: "R15"
+    device_type: "ROUTER"
+    group: "eve-ng"
