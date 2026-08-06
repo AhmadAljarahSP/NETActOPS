@@ -61,6 +61,14 @@ function AppContent() {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isUnauthorizedOpen, setIsUnauthorizedOpen] = useState(false);
+  const [newApiPass, setNewApiPass] = useState("");
+
+  useEffect(() => {
+    const handleUnauthorized = () => setIsUnauthorizedOpen(true);
+    window.addEventListener('netact-api-unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('netact-api-unauthorized', handleUnauthorized);
+  }, []);
 
   useEffect(() => {
     const handleOpenHelp = () => setIsHelpOpen(true);
@@ -255,6 +263,95 @@ function AppContent() {
       </div>
 
       <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
+
+      {isUnauthorizedOpen && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0,0,0,0.85)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 100000
+        }}>
+          <div style={{
+            background: "#1e293b",
+            color: "#f8fafc",
+            padding: 32,
+            borderRadius: 12,
+            width: 440,
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+            border: "1px solid #334155"
+          }}>
+            <h3 style={{ marginTop: 0, color: "#f43f5e", display: "flex", alignItems: "center", gap: 8, fontSize: 18 }}>
+              ⚠️ API Key Authentication Failure (401)
+            </h3>
+            <p style={{ fontSize: 13, color: "#cbd5e1", lineHeight: 1.5, marginBottom: 20 }}>
+              The backend rejected this browser's request. This typically happens when the <code>APP_PASSWORD</code> in your <code>.env</code> file does not match what the browser is sending.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#94a3b8" }}>Enter API Key (APP_PASSWORD from .env)</label>
+              <input
+                type="password"
+                placeholder="Enter APP_PASSWORD"
+                value={newApiPass}
+                onChange={(e) => setNewApiPass(e.target.value)}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 6,
+                  border: "1px solid #475569",
+                  background: "#0f172a",
+                  color: "#ffffff",
+                  fontSize: 14,
+                  outline: "none"
+                }}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
+              <button
+                onClick={() => {
+                  setIsUnauthorizedOpen(false);
+                }}
+                style={{
+                  background: "transparent",
+                  color: "#94a3b8",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 600
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (newApiPass) {
+                    localStorage.setItem('app_password', newApiPass);
+                    sessionStorage.setItem('app_password', newApiPass);
+                    setIsUnauthorizedOpen(false);
+                    window.location.reload();
+                  }
+                }}
+                style={{
+                  background: "#00adb5",
+                  color: "#ffffff",
+                  border: "none",
+                  padding: "8px 16px",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 600
+                }}
+              >
+                Save & Reload
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

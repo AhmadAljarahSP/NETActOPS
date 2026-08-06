@@ -42,10 +42,24 @@ export default function Devices() {
   useEffect(() => { fetchDevices(); }, []);
 
   async function fetchDevices() {
-    const res = await fetch(`${API}/devices`, {
-      headers: { 'x-api-key': sessionStorage.getItem('app_password') || '' }
-    });
-    setDevices(await res.json());
+    try {
+      const res = await fetch(`${API}/devices`, {
+        headers: { 'x-api-key': sessionStorage.getItem('app_password') || '' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setDevices(data);
+        } else {
+          setDevices([]);
+        }
+      } else {
+        setDevices([]);
+      }
+    } catch (err) {
+      console.error("Error fetching devices:", err);
+      setDevices([]);
+    }
   }
 
   const groupOptions = useMemo(() => {
