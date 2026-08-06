@@ -24,10 +24,21 @@ export default function Notifications() {
 
   // Available chat output channels supported by our Matterbridge setup
   const channelOptions = [
-    { value: 'slack', label: 'Slack Workspace' },
-    { value: 'telegram', label: 'Telegram Bot/Group' },
-    { value: 'discord', label: 'Discord Server Channel' },
-    { value: 'teams', label: 'Microsoft Teams Webhook' }
+    { value: 'slack', label: 'Slack' },
+    { value: 'telegram', label: 'Telegram' },
+    { value: 'discord', label: 'Discord' },
+    { value: 'teams', label: 'Microsoft Teams' },
+    { value: 'whatsapp', label: 'WhatsApp' },
+    { value: 'matrix', label: 'Matrix' },
+    { value: 'mattermost', label: 'Mattermost' },
+    { value: 'irc', label: 'IRC' },
+    { value: 'xmpp', label: 'XMPP' },
+    { value: 'zulip', label: 'Zulip' },
+    { value: 'rocketchat', label: 'Rocket.Chat' },
+    { value: 'keybase', label: 'Keybase' },
+    { value: 'mastodon', label: 'Mastodon' },
+    { value: 'twitch', label: 'Twitch' },
+    { value: 'gitter', label: 'Gitter' }
   ];
 
   useEffect(() => {
@@ -260,32 +271,65 @@ export default function Notifications() {
                       </select>
                     </div>
 
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1, minWidth: 280 }}>
                       <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-inactive)" }}>Relay to channels:</span>
-                      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                        {channelOptions.map(ch => {
-                          const active = rule.channels.includes(ch.value);
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                        {rule.channels.map(chVal => {
+                          const chOpt = channelOptions.find(o => o.value === chVal) || { value: chVal, label: chVal };
                           return (
-                            <button
-                              type="button"
-                              key={ch.value}
-                              onClick={() => handleChannelToggle(index, ch.value)}
+                            <div
+                              key={chVal}
                               style={{
-                                padding: "6px 12px",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 6,
+                                padding: "5px 10px",
                                 borderRadius: 6,
-                                border: `1px solid ${active ? "var(--primary)" : "var(--border-whisper)"}`,
-                                background: active ? "rgba(0,173,181,0.15)" : "transparent",
-                                color: active ? "var(--primary)" : "var(--text-muted)",
-                                fontSize: 11,
-                                fontWeight: 600,
-                                cursor: "pointer",
-                                transition: "all 0.15s ease"
+                                border: "1px solid var(--primary)",
+                                background: "rgba(0,173,181,0.15)",
+                                color: "var(--primary)",
+                                fontSize: 12,
+                                fontWeight: 600
                               }}
                             >
-                              {active ? '✓ ' : ''}{ch.label}
-                            </button>
+                              <span>{chOpt.label}</span>
+                              <span 
+                                onClick={() => handleChannelToggle(index, chVal)}
+                                style={{ cursor: "pointer", color: "var(--status-danger)", paddingLeft: 4, fontWeight: "bold" }}
+                                title="Remove channel"
+                              >
+                                ×
+                              </span>
+                            </div>
                           );
                         })}
+                        
+                        <select
+                          value=""
+                          onChange={(e) => {
+                            if (e.target.value) {
+                              handleChannelToggle(index, e.target.value);
+                            }
+                          }}
+                          style={{
+                            padding: "6px 12px",
+                            borderRadius: 6,
+                            border: "1px solid var(--border-whisper)",
+                            background: "var(--surface-solid, #0f172a)",
+                            color: "var(--text-high-contrast)",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            outline: "none",
+                            cursor: "pointer"
+                          }}
+                        >
+                          <option value="">+ Add Channel...</option>
+                          {channelOptions
+                            .filter(opt => !rule.channels.includes(opt.value))
+                            .map(opt => (
+                              <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
+                        </select>
                       </div>
                     </div>
 

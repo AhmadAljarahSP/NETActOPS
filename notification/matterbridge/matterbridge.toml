@@ -7,13 +7,14 @@
 BindAddress = "0.0.0.0:4242"
 Buffer = 1000
 
-# 2. Define chat platform protocols (placeholders, configure credentials as needed)
-[telegram.mytelegram]
-# Token="YOUR_TELEGRAM_BOT_TOKEN"
-# RemoteNickFormat="{NICK}: "
+# 2. Define chat platform protocols (configure credentials as needed)
+# Simply uncomment the protocol block and insert your credentials.
 
 [slack.myslack]
 # Token="xoxb-YOUR_SLACK_BOT_TOKEN"
+
+[telegram.mytelegram]
+# Token="YOUR_TELEGRAM_BOT_TOKEN"
 
 [discord.mydiscord]
 # Token="YOUR_DISCORD_BOT_TOKEN"
@@ -21,55 +22,202 @@ Buffer = 1000
 [msteams.myteams]
 # WebhookURL="https://m365.webhook.office.com/..."
 
+[whatsapp.mywhatsapp]
+# Number="YOUR_PHONE_NUMBER"
+
+[matrix.mymatrix]
+# Server="https://matrix.org"
+# Login="username"
+# Password="password"
+
+[mattermost.mymattermost]
+# Server="https://mattermost.example.com"
+# Token="YOUR_MATTERMOST_TOKEN"
+
+[irc.myirc]
+# Server="irc.freenode.net:6667"
+# Nick="NETActBot"
+
+[xmpp.myxmpp]
+# Server="jabber.org:5222"
+# Jid="netact@jabber.org"
+# Password="password"
+
+[zulip.myzulip]
+# Server="https://zulip.example.com"
+# Email="bot@example.com"
+# ApiKey="YOUR_ZULIP_API_KEY"
+
+[rocketchat.myrocketchat]
+# Server="https://rocketchat.example.com"
+# Token="YOUR_TOKEN"
+# UserId="YOUR_USER_ID"
+
+[keybase.mykeybase]
+# PaperKey="YOUR_KEYBASE_PAPER_KEY"
+
+[mastodon.mymastodon]
+# Server="https://mastodon.social"
+# Token="YOUR_MASTODON_ACCESS_TOKEN"
+
+[twitch.mytwitch]
+# Server="irc.chat.twitch.tv:6667"
+# Nick="TwitchChannel"
+# Password="oauth:YOUR_TWITCH_OAUTH_TOKEN"
+
+[gitter.mygitter]
+# Token="YOUR_GITTER_TOKEN"
+
+
 # 3. Gateways bridging API requests to destination channels
-# Gateway for Telegram
-[[gateway]]
-name = "netact_telegram"
-enable = true
+# Active gateways route API posts targeting a gateway back to the corresponding client.
 
-[[gateway.inout]]
-account = "api.local"
-channel = "api"
-
-[[gateway.inout]]
-account = "telegram.mytelegram"
-channel = "-100123456789" # Set your Telegram Chat ID here
-
-# Gateway for Slack
 [[gateway]]
 name = "netact_slack"
 enable = true
-
 [[gateway.inout]]
 account = "api.local"
 channel = "api"
-
 [[gateway.inout]]
 account = "slack.myslack"
-channel = "#alerts" # Set your Slack Channel here
+channel = "#alerts"
 
-# Gateway for Discord
+[[gateway]]
+name = "netact_telegram"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "telegram.mytelegram"
+channel = "-100123456789"
+
 [[gateway]]
 name = "netact_discord"
 enable = true
-
 [[gateway.inout]]
 account = "api.local"
 channel = "api"
-
 [[gateway.inout]]
 account = "discord.mydiscord"
-channel = "123456789" # Set your Discord Channel ID here
+channel = "123456789"
 
-# Gateway for MS Teams
 [[gateway]]
 name = "netact_teams"
 enable = true
-
 [[gateway.inout]]
 account = "api.local"
 channel = "api"
-
 [[gateway.inout]]
 account = "msteams.myteams"
 channel = "teams"
+
+[[gateway]]
+name = "netact_whatsapp"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "whatsapp.mywhatsapp"
+channel = "YOUR_WHATSAPP_CHAT_ID"
+
+[[gateway]]
+name = "netact_matrix"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "matrix.mymatrix"
+channel = "#alerts:matrix.org"
+
+[[gateway]]
+name = "netact_mattermost"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "mattermost.mymattermost"
+channel = "alerts"
+
+[[gateway]]
+name = "netact_irc"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "irc.myirc"
+channel = "#alerts"
+
+[[gateway]]
+name = "netact_xmpp"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "xmpp.myxmpp"
+channel = "alerts@conference.jabber.org"
+
+[[gateway]]
+name = "netact_zulip"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "zulip.myzulip"
+channel = "alerts"
+
+[[gateway]]
+name = "netact_rocketchat"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "rocketchat.myrocketchat"
+channel = "alerts"
+
+[[gateway]]
+name = "netact_keybase"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "keybase.mykeybase"
+channel = "alerts"
+
+[[gateway]]
+name = "netact_mastodon"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "mastodon.mymastodon"
+channel = "public"
+
+[[gateway]]
+name = "netact_twitch"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "twitch.mytwitch"
+channel = "#twitchchannel"
+
+[[gateway]]
+name = "netact_gitter"
+enable = true
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+[[gateway.inout]]
+account = "gitter.mygitter"
+channel = "room-id"
