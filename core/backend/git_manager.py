@@ -17,6 +17,22 @@ class CollectionType(Enum):
     BACKUP = "backups"
     HEALTHCHECK = "healthchecks"
 
+def trigger_notification(event_type: str, title: str, message: str):
+    def post_thread():
+        try:
+            import requests
+            url = "http://notification-backend:8012/notify"
+            requests.post(url, json={
+                "event_type": event_type,
+                "title": title,
+                "message": message
+            }, timeout=3.0)
+        except Exception:
+            pass
+
+    import threading
+    threading.Thread(target=post_thread, daemon=True).start()
+
 class GitConfigManager:
     def __init__(self, repo_path: str = "/git/repo"):
         self.repo_path = Path(repo_path)
@@ -184,6 +200,38 @@ class GitConfigManager:
                 meta_file.write_text(json.dumps(metadata, indent=2), encoding='utf-8')
             except Exception as ex:
                 print(f"Failed to update metadata file with commit details: {ex}")
+            
+            try:
+                if status == "success":
+                    if type_prefix == "backup":
+                        trigger_notification(
+                            "backup_run",
+                            f"🟢 Backup Succeeded: {device_name}",
+                            f"Backup configuration collected and committed successfully for device **{device_name}**."
+                        )
+                        if changed:
+                            trigger_notification(
+                                "config_drift",
+                                f"⚠️ Configuration Drift Detected: {device_name}",
+                                f"Changes detected on device **{device_name}**!\n"
+                                f"Lines Added: `{lines_added}` | Lines Deleted: `{lines_deleted}`"
+                            )
+                    elif type_prefix == "healthcheck":
+                        trigger_notification(
+                            "healthcheck_run",
+                            f"🟢 Healthcheck Succeeded: {device_name}",
+                            f"Healthcheck validation for device **{device_name}** passed successfully."
+                        )
+                else:
+                    event = "backup_failed" if type_prefix == "backup" else "healthcheck_failed"
+                    label = "Backup" if type_prefix == "backup" else "Healthcheck"
+                    trigger_notification(
+                        event,
+                        f"🔴 {label} Failed: {device_name}",
+                        f"{label} pull failed for device **{device_name}**.\n\nError details: `{error_msg}`"
+                    )
+            except Exception as ex:
+                print(f"Failed to dispatch notify: {ex}")
             
             return {
                 "id": timestamp,

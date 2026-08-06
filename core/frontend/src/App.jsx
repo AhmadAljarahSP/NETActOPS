@@ -21,6 +21,7 @@ const Topology = React.lazy(() => import("./pages/Topology"));
 const AiAssistant = React.lazy(() => import("./pages/AiAssistant"));
 const Automation = React.lazy(() => import("./pages/Automation"));
 const McpSettings = React.lazy(() => import("./pages/McpSettings"));
+const Notifications = React.lazy(() => import("./pages/Notifications"));
 
 import HelpModal from "./components/HelpModal";
 
@@ -166,6 +167,7 @@ function AppContent() {
             <Route path="/backup" element={<Backups />} />
             <Route path="/settings/mcp" element={<McpSettings />} />
             <Route path="/admin" element={<Settings />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="/import" element={<Imports />} />
             <Route path="/eoleos" element={<EolEos />} />
             <Route path="/backup/device/:id" element={<DeviceBackups />} />

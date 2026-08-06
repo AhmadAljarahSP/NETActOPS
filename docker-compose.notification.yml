@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  notification-backend:
+    build: ./notification/backend
+    container_name: NETAct_notification_backend
+    restart: unless-stopped
+    networks:
+      - netact_config-net
+    volumes:
+      - ./core/db:/app/db
+    ports:
+      - "127.0.0.1:8012:8012"
+    environment:
+      - APP_PASSWORD=${APP_PASSWORD:-freshuser-apppass-2026}
+
+  matterbridge:
+    image: 42wim/matterbridge:latest
+    container_name: NETAct_matterbridge
+    restart: unless-stopped
+    networks:
+      - netact_config-net
+    volumes:
+      - ./notification/matterbridge/matterbridge.toml:/etc/matterbridge/matterbridge.toml:ro
+    ports:
+      - "127.0.0.1:4242:4242"
+
+networks:
+  netact_config-net:
+    external: true

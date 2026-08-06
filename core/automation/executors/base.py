@@ -298,41 +298,70 @@ async def push_config_to_device(jump_transport: AsyncJumpTransport, device: dict
             "error": str(e),
             "session_log": "".join([str(x) for x in session_log]) + f"\n\n[PUSH FAIL EXCEPTION]: {repr(e)}"
         }
-
 async def send_teams_notification(webhook_url: str, flow_name: str, task_id: str, status: str, started: str, duration: float, devices_list: list, failures: list):
     try:
-        color = "00FF00" if status == "success" else "FF0000"
-        title = f"NETAct Automation Flow: {flow_name}"
         status_text = "🟢 Success" if status == "success" else "🔴 Failed"
-        summary_msg = f"Workflow **{flow_name}** finished execution with status **{status_text}**."
         
-        card_data = {
-            "@type": "MessageCard",
-            "@context": "http://schema.org/extensions",
-            "themeColor": color,
-            "summary": title,
-            "sections": [{
-                "activityTitle": title,
-                "activitySubtitle": f"Run ID: {task_id}",
-                "facts": [
-                    {"name": "Status", "value": status_text},
-                    {"name": "Triggered At", "value": started},
-                    {"name": "Elapsed Time", "value": f"{duration:.2f} seconds"},
-                    {"name": "Devices Targeted", "value": ", ".join(devices_list)},
-                ],
-                "text": summary_msg
-            }]
-        }
-        
-        if failures:
-            card_data["sections"].append({
-                "title": "Failed Components / Errors",
-                "text": "\n".join([f"- **{f['device']}**: {f['error']}" for f in failures])
-            })
+        # Check if URL target is our custom Notification backend
+        if "/notify" in webhook_url or "notification-backend" in webhook_url:
+            err_details = ""
+            if failures:
+                err_details = "\n\nErrors:\n" + "\n".join([f"- {f['device']}: {f['error']}" for f in failures])
+                
+            payload = {
+                "event_type": "automation_flow_run",
+                "title": f"Workflow {flow_name} Run Completed",
+                "message": f"Workflow **{flow_name}** (Run ID: `{task_id}`) finished with status: **{status_text}**.\n"
+                           f"Duration: {duration:.2f} seconds\n"
+                           f"Devices Targeted: {', '.join(devices_list)}{err_details}"
+            }
+        # Check if URL target is Matterbridge directly
+        elif "/api/message" in webhook_url or "netact_matterbridge" in webhook_url:
+            err_details = ""
+            if failures:
+                err_details = "\nErrors:\n" + "\n".join([f"- {f['device']}: {f['error']}" for f in failures])
+                
+            payload = {
+                "username": "NETAct Notification",
+                "text": f"NETAct Automation Flow: {flow_name}\n"
+                        f"Run ID: {task_id}\n"
+                        f"Status: {status_text}\n"
+                        f"Elapsed Time: {duration:.2f} seconds\n"
+                        f"Devices Targeted: {', '.join(devices_list)}{err_details}",
+                "gateway": "netact_alerts"
+            }
+        # Fallback: Teams MessageCard
+        else:
+            color = "00FF00" if status == "success" else "FF0000"
+            title = f"NETAct Automation Flow: {flow_name}"
+            summary_msg = f"Workflow **{flow_name}** finished execution with status **{status_text}**."
             
+            payload = {
+                "@type": "MessageCard",
+                "@context": "http://schema.org/extensions",
+                "themeColor": color,
+                "summary": title,
+                "sections": [{
+                    "activityTitle": title,
+                    "activitySubtitle": f"Run ID: {task_id}",
+                    "facts": [
+                        {"name": "Status", "value": status_text},
+                        {"name": "Triggered At", "value": started},
+                        {"name": "Elapsed Time", "value": f"{duration:.2f} seconds"},
+                        {"name": "Devices Targeted", "value": ", ".join(devices_list)},
+                    ],
+                    "text": summary_msg
+                }]
+            }
+            if failures:
+                payload["sections"].append({
+                    "title": "Failed Components / Errors",
+                    "text": "\n".join([f"- **{f['device']}**: {f['error']}" for f in failures])
+                })
+
         async with httpx.AsyncClient() as client:
-            res = await client.post(webhook_url, json=card_data)
+            res = await client.post(webhook_url, json=payload, timeout=10.0)
             if res.status_code >= 400:
-                logger.error("Teams notification error: %d - %s", res.status_code, res.text)
+                logger.error("Notification trigger gateway error: %d - %s", res.status_code, res.text)
     except Exception as e:
-        logger.error("Failed sending Teams notification: %s", e)
+        logger.error("Failed sending notification: %s", e)

@@ -1,0 +1,75 @@
+# =====================================================================
+# Matterbridge Configuration for NETAct Notifications
+# =====================================================================
+
+# 1. Define the HTTP API listener inside the Docker network
+[api.local]
+BindAddress = "0.0.0.0:4242"
+Buffer = 1000
+
+# 2. Define chat platform protocols (placeholders, configure credentials as needed)
+[telegram.mytelegram]
+# Token="YOUR_TELEGRAM_BOT_TOKEN"
+# RemoteNickFormat="{NICK}: "
+
+[slack.myslack]
+# Token="xoxb-YOUR_SLACK_BOT_TOKEN"
+
+[discord.mydiscord]
+# Token="YOUR_DISCORD_BOT_TOKEN"
+
+[msteams.myteams]
+# WebhookURL="https://m365.webhook.office.com/..."
+
+# 3. Gateways bridging API requests to destination channels
+# Gateway for Telegram
+[[gateway]]
+name = "netact_telegram"
+enable = true
+
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+
+[[gateway.inout]]
+account = "telegram.mytelegram"
+channel = "-100123456789" # Set your Telegram Chat ID here
+
+# Gateway for Slack
+[[gateway]]
+name = "netact_slack"
+enable = true
+
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+
+[[gateway.inout]]
+account = "slack.myslack"
+channel = "#alerts" # Set your Slack Channel here
+
+# Gateway for Discord
+[[gateway]]
+name = "netact_discord"
+enable = true
+
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+
+[[gateway.inout]]
+account = "discord.mydiscord"
+channel = "123456789" # Set your Discord Channel ID here
+
+# Gateway for MS Teams
+[[gateway]]
+name = "netact_teams"
+enable = true
+
+[[gateway.inout]]
+account = "api.local"
+channel = "api"
+
+[[gateway.inout]]
+account = "msteams.myteams"
+channel = "teams"

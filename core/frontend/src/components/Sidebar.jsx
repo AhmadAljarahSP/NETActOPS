@@ -147,6 +147,10 @@ export default function Sidebar() {
               <span className="material-symbols-outlined" style={{ fontSize: 18 }}>settings</span>
               {!isCollapsed && <span style={{ marginLeft: 12 }}>Settings</span>}
             </NavLink>
+            <NavLink to="/notifications" className="sidebar-nav-link" style={navItem} title={isCollapsed ? "Notification Gateways" : undefined}>
+              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>notifications_active</span>
+              {!isCollapsed && <span style={{ marginLeft: 12 }}>Notifications</span>}
+            </NavLink>
           </>
         )}
 
